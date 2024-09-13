@@ -4,14 +4,18 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "@remix-run/react";
+  useLocation,
+} from '@remix-run/react';
 
-import "normalize.css";
-import "./styles/tailwind.css";
+import 'normalize.css';
+import '~/styles/tailwind.css';
 
-import MainSearchArea from "./components/MainSearchArea";
+import MainSearchArea from '~/components/MainSearchArea';
+import { routes } from '~/types/search';
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+
   return (
     <html lang="en">
       <head>
@@ -48,7 +52,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className="flex min-h-screen">
-          <MainSearchArea />
+          {Object.keys(routes).includes(location.pathname) && (
+            <MainSearchArea
+              searchType={routes[location.pathname as keyof typeof routes]}
+            />
+          )}
           {children}
         </div>
 
