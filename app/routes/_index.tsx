@@ -2,8 +2,12 @@ import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Apple Music to Musixmatch Link" },
+    {
+      name: "description",
+      content:
+        "Get Musixmatch Link, ISRC, Track ID, Album Link from Apple Music Link",
+    },
   ];
 };
 
