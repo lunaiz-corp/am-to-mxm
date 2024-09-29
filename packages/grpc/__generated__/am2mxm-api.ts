@@ -197,7 +197,7 @@ export class TrackInfo extends pb_1.Message {
         isrc?: string;
         title?: string;
         artist?: string;
-        mxm_abstrack?: string;
+        mxm_abstrack?: number;
         mxm_track_url?: string;
         mxm_album?: string;
         mxm_album_url?: string;
@@ -255,9 +255,9 @@ export class TrackInfo extends pb_1.Message {
         pb_1.Message.setField(this, 3, value);
     }
     get mxm_abstrack() {
-        return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
     }
-    set mxm_abstrack(value: string) {
+    set mxm_abstrack(value: number) {
         pb_1.Message.setField(this, 4, value);
     }
     get mxm_track_url() {
@@ -294,7 +294,7 @@ export class TrackInfo extends pb_1.Message {
         isrc?: string;
         title?: string;
         artist?: string;
-        mxm_abstrack?: string;
+        mxm_abstrack?: number;
         mxm_track_url?: string;
         mxm_album?: string;
         mxm_album_url?: string;
@@ -336,7 +336,7 @@ export class TrackInfo extends pb_1.Message {
             isrc?: string;
             title?: string;
             artist?: string;
-            mxm_abstrack?: string;
+            mxm_abstrack?: number;
             mxm_track_url?: string;
             mxm_album?: string;
             mxm_album_url?: string;
@@ -382,8 +382,8 @@ export class TrackInfo extends pb_1.Message {
             writer.writeString(2, this.title);
         if (this.artist.length)
             writer.writeString(3, this.artist);
-        if (this.mxm_abstrack.length)
-            writer.writeString(4, this.mxm_abstrack);
+        if (this.mxm_abstrack != 0)
+            writer.writeInt32(4, this.mxm_abstrack);
         if (this.mxm_track_url.length)
             writer.writeString(5, this.mxm_track_url);
         if (this.mxm_album.length)
@@ -413,7 +413,7 @@ export class TrackInfo extends pb_1.Message {
                     message.artist = reader.readString();
                     break;
                 case 4:
-                    message.mxm_abstrack = reader.readString();
+                    message.mxm_abstrack = reader.readInt32();
                     break;
                 case 5:
                     message.mxm_track_url = reader.readString();

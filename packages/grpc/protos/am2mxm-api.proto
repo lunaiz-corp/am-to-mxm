@@ -45,7 +45,7 @@ message TrackInfo {
     string title         = 2; // Track title. The title from Musixmatch should be used unless if it cannot be found in Musixmatch.
     string artist        = 3; // Artist name. The artist name from Musixmatch should be used unless if it cannot be found in Musixmatch.
 
-    string mxm_abstrack  = 4; // Musixmatch's abstrack. Could be null, if Musixmatch doesn't have this track.
+    int32  mxm_abstrack  = 4; // Musixmatch's abstrack. Could be null, if Musixmatch doesn't have this track.
     string mxm_track_url = 5; // Musixmatch's track URL. Could be null, if Musixmatch doesn't have this track.
 
     string mxm_album     = 6; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.

@@ -14,7 +14,13 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.11.3",
+    "@keyv/sqlite": "^4.0.1",
     "@packages/grpc": "workspace:^",
+    "@types/apple-music-api": "^0.4.4",
+    "cache-manager": "^6.1.0",
+    "es-toolkit": "^1.22.0",
+    "jose": "^5.9.3",
+    "keyv": "^5.0.3",
     "tslog": "^4.9.3"
   },
   "devDependencies": {

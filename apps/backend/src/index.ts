@@ -21,13 +21,14 @@ import * as grpc from '@grpc/grpc-js';
 
 import { SearchService } from './services/search.service';
 
+process.loadEnvFile('.env');
+
 const logger: Logger<ILogObj> = new Logger({
   name: 'lunaiz.am2mxm.api.v1',
   type: 'pretty',
 });
 
 const server = new grpc.Server();
-
 server.addService(SearchService.definition, new SearchService());
 
 if (require.main === module) {
