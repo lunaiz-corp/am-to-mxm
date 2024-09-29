@@ -1,6 +1,13 @@
-import { Link } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
+import { useRef } from 'react';
 
-import { ESearchType, ISearchTypeProps } from '~/types/search';
+import {
+  SearchType,
+  SearchQuery,
+  SearchClient as SearchServiceClient,
+} from '@packages/grpc/__generated__/am2mxm-api';
+
+import { ISearchTypeProps } from '~/types/search';
 
 import amLogo from '~/assets/images/am.png';
 import mxmLogo from '~/assets/images/mxm.png';
@@ -9,12 +16,15 @@ import AmTypography from '~/assets/images/am_typography.svg?react';
 import MxmTypography from '~/assets/images/mxm_typography.svg?react';
 
 export default function MainSearchArea(
-  props: ISearchTypeProps = { searchType: ESearchType.LINK },
+  props: ISearchTypeProps = { searchType: SearchType.LINK },
 ) {
+  const client = new SearchServiceClient(import.meta.env.VITE_API_URL);
+  const queryRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="h-screen max-w-[448px] bg-neutral-100 pl-16 pt-[158px]">
       <div className="flex items-center gap-4">
-        {props.searchType === ESearchType.LINK ? (
+        {props.searchType === SearchType.LINK ? (
           <>
             <img
               src={amLogo}
@@ -22,7 +32,7 @@ export default function MainSearchArea(
               className="size-[50px] rounded-[10px]"
             />
             <span
-              className="material-symbols-rounded !text-[40px]"
+              className="material-symbols-rounded size-[40px] !text-[40px]"
               style={{
                 fontVariationSettings:
                   "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 40",
@@ -36,7 +46,7 @@ export default function MainSearchArea(
               className="size-[50px] rounded-[10px]"
             />
           </>
-        ) : props.searchType === ESearchType.SOURCE ? (
+        ) : props.searchType === SearchType.SOURCE ? (
           <>
             <img
               src={mxmLogo}
@@ -44,7 +54,7 @@ export default function MainSearchArea(
               className="size-[50px] rounded-[10px]"
             />
             <span
-              className="material-symbols-rounded !text-[40px]"
+              className="material-symbols-rounded size-[40px] !text-[40px]"
               style={{
                 fontVariationSettings:
                   "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 40",
@@ -72,9 +82,9 @@ export default function MainSearchArea(
         )}
       </div>
 
-      {props.searchType !== ESearchType.ABSTRACK && (
+      {props.searchType !== SearchType.ABSTRACK && (
         <div className="flex items-center gap-3 pr-[66px] pt-8">
-          {props.searchType === ESearchType.LINK ? (
+          {props.searchType === SearchType.LINK ? (
             <>
               <AmTypography className="h-7 fill-neutral-900" />
               <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-900">
@@ -94,9 +104,25 @@ export default function MainSearchArea(
         </div>
       )}
 
-      <form className="relative mr-28 mt-10 w-[335px]">
+      <Form
+        className="relative mr-28 mt-10 w-[335px]"
+        onSubmit={async () => {
+          if (!queryRef.current?.value) return;
+
+          const response = await client.SearchByQuery(
+            new SearchQuery({
+              type: props.searchType,
+              query: queryRef.current.value,
+            }),
+            null,
+          );
+
+          console.log(response.toObject());
+        }}
+      >
         <input
           id="link-input"
+          ref={queryRef}
           className="peer w-full border-0 border-b-[1.5px] border-b-neutral-800 bg-transparent pb-2.5 pl-1 pr-10 pt-6 text-lg text-neutral-800 outline-none"
           required
         />
@@ -105,16 +131,16 @@ export default function MainSearchArea(
           className="absolute left-1 top-[25.5px] font-sans text-base text-neutral-400 transition-all duration-500 ease-in-out peer-valid:top-0 peer-valid:text-sm peer-valid:text-neutral-800 peer-focus:top-0 peer-focus:text-sm peer-focus:text-neutral-800"
           htmlFor="link-input"
         >
-          {props.searchType === ESearchType.LINK
+          {props.searchType === SearchType.LINK
             ? 'Apple Music Track/Album link or ISRC'
-            : props.searchType === ESearchType.SOURCE
+            : props.searchType === SearchType.SOURCE
               ? 'Musixmatch Track/Album link or Abstrack'
               : 'Musixmatch Abstrack'}
         </label>
 
         <button type="submit">
           <span
-            className="material-symbols-rounded absolute right-1 top-[25.5px] !text-[26px] text-neutral-400"
+            className="material-symbols-rounded absolute right-1 top-[25.5px] size-[26px] !text-[26px] text-neutral-400"
             style={{
               fontVariationSettings:
                 "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20",
@@ -123,14 +149,14 @@ export default function MainSearchArea(
             search
           </span>
         </button>
-      </form>
+      </Form>
 
       <div className="absolute bottom-12 flex flex-col gap-6">
         <div className="flex gap-3 font-sans text-sm font-medium text-neutral-500">
           <Link to="/guide" className="underline">
             How to use
           </Link>
-          {props.searchType !== ESearchType.LINK && (
+          {props.searchType !== SearchType.LINK && (
             <>
               <span>|</span>
               <Link to="/" className="underline">
@@ -138,7 +164,7 @@ export default function MainSearchArea(
               </Link>
             </>
           )}
-          {props.searchType !== ESearchType.SOURCE && (
+          {props.searchType !== SearchType.SOURCE && (
             <>
               <span>|</span>
               <Link to="/source" className="underline">
@@ -146,7 +172,7 @@ export default function MainSearchArea(
               </Link>
             </>
           )}
-          {props.searchType !== ESearchType.ABSTRACK && (
+          {props.searchType !== SearchType.ABSTRACK && (
             <>
               <span>|</span>
               <Link to="/abstrack" className="underline">

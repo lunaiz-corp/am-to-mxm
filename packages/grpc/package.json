@@ -1,0 +1,16 @@
+{
+  "name": "@packages/grpc",
+  "private": true,
+  "scripts": {
+    "compile": "protoc -I=protos/ am2mxm-api.proto --ts_out=__generated__ --ts_opt=unary_rpc_promise=true,no_namespace,target=web"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.11.3",
+    "@types/google-protobuf": "^3.15.12",
+    "google-protobuf": "^3.21.4",
+    "grpc-web": "^1.5.0"
+  },
+  "devDependencies": {
+    "protoc-gen-ts": "^0.8.7"
+  }
+}

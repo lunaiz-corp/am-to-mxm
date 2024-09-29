@@ -43,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_right_alt,search&display=block"
         />
         <link
           rel="stylesheet"
@@ -57,6 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               searchType={routes[location.pathname as keyof typeof routes]}
             />
           )}
+
           {children}
         </div>
 

@@ -1,0 +1,56 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package lunaiz.am2mxm.api.v1;
+
+// Service definition
+service Search {
+    rpc SearchByQuery(SearchQuery) returns (SearchResult) {}
+}
+
+// Enum types definition
+enum SearchType {
+    LINK     = 0; // Apple Music -> Musixmatch by ISRC
+    SOURCE   = 1; // Musixmatch -> Apple Music by ISRC
+    ABSTRACK = 2; // Musixmatch -> Apple Music by abstrack
+}
+
+// Message types definition
+message SearchQuery {
+    SearchType type = 1; // Determines the search type
+    string query    = 2; // Could be Apple Music Track ID, link, ISRC or Abstrack.
+}
+
+message SearchResult {
+    SearchType type           = 1; // Determines the search type (returned for validation)
+    repeated TrackInfo tracks = 2; // List of tracks
+}
+
+message TrackInfo {
+    string isrc          = 1; // Follow ISO 3901. CC-XXX-YY-NNNN format
+    
+    string title         = 2; // Track title. The title from Musixmatch should be used unless if it cannot be found in Musixmatch.
+    string artist        = 3; // Artist name. The artist name from Musixmatch should be used unless if it cannot be found in Musixmatch.
+
+    string mxm_abstrack  = 4; // Musixmatch's abstrack. Could be null, if Musixmatch doesn't have this track.
+    string mxm_track_url = 5; // Musixmatch's track URL. Could be null, if Musixmatch doesn't have this track.
+
+    string mxm_album     = 6; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.
+    string mxm_album_url = 7; // Musixmatch's album URL. Could be null, if Musixmatch doesn't have this track.
+
+    string am_track_url  = 8; // Apple Music's track URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
+    string am_album_url  = 9; // Apple Music's album URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
+}
