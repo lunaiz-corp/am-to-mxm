@@ -6,6 +6,16 @@ export interface IMxmOptimisedResponse {
   url: string; // Musixmatch's URL (e.g. 'https://www.musixmatch.com/lyrics/Mingturn/Blue-Lemonade?utm_source=application&utm_campaign=api&utm_medium=musiXmatch+-+internal+use%3A1409607281181'). Come from `track_share_url`
   vanityId: string; // Musixmatch's Vanity ID (e.g. 'Mingturn/Blue-Lemonade'). Come from `commontrack_vanity_id`
 
+  artwork: {
+    url: {
+      // Artwork URL (e.g. 'http://s.mxmcdn.net/images-storage/albums/nocover.png')
+      '100x100': string;
+      '350x350': string;
+      '500x500': string;
+      '800x800': string;
+    };
+  };
+
   album: {
     id: string; // Album's ID, managed by Musixmatch (e.g. '65454068'). Come from `album_id`
     name: string; // Album's name (e.g. 'BLUE'). Come from `album_name`

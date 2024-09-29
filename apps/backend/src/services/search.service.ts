@@ -136,10 +136,19 @@ export class SearchService extends UnimplementedSearchService {
                 artist: x.artist.name || tempAppleResponse.artist.name,
                 mxm_abstrack: x.abstrack,
                 mxm_track_url: x.url,
+                mxm_thumbnail:
+                  x.artwork.url['800x800'] ||
+                  x.artwork.url['500x500'] ||
+                  x.artwork.url['350x350'] ||
+                  x.artwork.url['100x100'] ||
+                  'http://s.mxmcdn.net/images-storage/albums/nocover.png',
                 mxm_album: x.album.name,
                 mxm_album_url: `https://www.musixmatch.com/album/${x.album.vanityId}`,
                 am_track_url: tempAppleResponse.url,
                 am_album_url: `https://music.apple.com/album/${tempAppleResponse.album.id}?i=${tempAppleResponse.id}`,
+                am_thumbnail:
+                  tempAppleResponse.artwork.url ||
+                  'http://s.mxmcdn.net/images-storage/albums/nocover.png',
               });
             }),
           }),

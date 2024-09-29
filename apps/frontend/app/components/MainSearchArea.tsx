@@ -8,6 +8,7 @@ import {
 } from '@packages/grpc/__generated__/am2mxm-api';
 
 import { ISearchTypeProps } from '~/types/search';
+import { useSearchResultStore } from '~/stores/searchResult';
 
 import amLogo from '~/assets/images/am.png';
 import mxmLogo from '~/assets/images/mxm.png';
@@ -20,6 +21,8 @@ export default function MainSearchArea(
 ) {
   const client = new SearchServiceClient(import.meta.env.VITE_API_URL);
   const queryRef = useRef<HTMLInputElement>(null);
+
+  const setSearchResult = useSearchResultStore((state) => state.setResult);
 
   return (
     <div className="h-screen max-w-[448px] bg-neutral-100 pl-16 pt-[158px]">
@@ -118,6 +121,7 @@ export default function MainSearchArea(
           );
 
           console.log(response.toObject());
+          setSearchResult(response);
         }}
       >
         <input

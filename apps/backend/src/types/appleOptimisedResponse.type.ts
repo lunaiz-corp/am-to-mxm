@@ -12,7 +12,6 @@ export interface IAppleOptimisedResponse {
 
   artwork: {
     url: string; // Artwork URL (e.g. 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/28/84/94/28849458-d7bc-f65a-54a2-076878c32bea/888272134797.jpg/3000x3000bb.jpg'). Come from `attributes.artwork.url` with preprocessed data
-    bgColor: string; // Artwork's background color (e.g. 'cbc4f8'). Come from `attributes.artwork.bgColor`
   };
 
   album: {

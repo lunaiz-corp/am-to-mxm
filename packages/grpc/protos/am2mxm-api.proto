@@ -47,10 +47,12 @@ message TrackInfo {
 
     int32  mxm_abstrack  = 4; // Musixmatch's abstrack. Could be null, if Musixmatch doesn't have this track.
     string mxm_track_url = 5; // Musixmatch's track URL. Could be null, if Musixmatch doesn't have this track.
+    string mxm_thumbnail = 6; // Musixmatch's thumbnail URL. Could be null, if Musixmatch doesn't have this track.
 
-    string mxm_album     = 6; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.
-    string mxm_album_url = 7; // Musixmatch's album URL. Could be null, if Musixmatch doesn't have this track.
+    string mxm_album     = 7; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.
+    string mxm_album_url = 8; // Musixmatch's album URL. Could be null, if Musixmatch doesn't have this track.
 
-    string am_track_url  = 8; // Apple Music's track URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
-    string am_album_url  = 9; // Apple Music's album URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
+    string am_track_url  = 9; // Apple Music's track URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
+    string am_album_url  = 10; // Apple Music's album URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
+    string am_thumbnail  = 11; // Apple Music's thumbnail URL. Could be null, if Apple Music doesn't have this track.
 }

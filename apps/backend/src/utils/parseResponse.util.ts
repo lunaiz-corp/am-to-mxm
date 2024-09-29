@@ -32,8 +32,14 @@ export function parseResponseFromApple(
         durationInMillis: song.attributes!.durationInMillis,
 
         artwork: {
-          url: song.attributes!.artwork?.url || '',
-          bgColor: song.attributes!.artwork?.bgColor || '',
+          url: song.attributes!.artwork
+            ? song
+                .attributes!.artwork.url.replace(
+                  '{w}',
+                  song.attributes!.artwork.width.toString(),
+                )
+                .replace('{h}', song.attributes!.artwork.height.toString())
+            : '',
         },
 
         album: {
@@ -62,6 +68,15 @@ export function parseResponseFromMxm(
 
       url: data.track.track_share_url,
       vanityId: data.track.commontrack_vanity_id,
+
+      artwork: {
+        url: {
+          '100x100': data.track.album_coverart_100x100,
+          '350x350': data.track.album_coverart_350x350,
+          '500x500': data.track.album_coverart_500x500,
+          '800x800': data.track.album_coverart_800x800,
+        },
+      },
 
       album: {
         id: data.track.album_id,

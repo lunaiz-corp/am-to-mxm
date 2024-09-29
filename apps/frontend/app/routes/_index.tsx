@@ -1,5 +1,8 @@
 import type { MetaFunction } from '@remix-run/node';
 
+import TrackCard from '~/components/TrackCard';
+import { useSearchResultStore } from '~/stores/searchResult';
+
 export const meta: MetaFunction = () => [
   { title: 'Apple Music to Musixmatch Link' },
   {
@@ -10,41 +13,19 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function Index() {
+  const searchResult = useSearchResultStore((state) => state.result);
+
   return (
-    <div className="p-4 font-sans">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="mt-4 list-disc space-y-2 pl-6">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div className="flex h-screen w-full flex-col justify-center">
+      <div className="ml-32 mr-16 flex max-h-[calc(100vh-6rem)] flex-col gap-4 overflow-y-auto">
+        {searchResult ? (
+          searchResult.tracks.map((track) => (
+            <TrackCard key={track.mxm_abstrack} track={track} />
+          ))
+        ) : (
+          <div className="text-center">Search for a track on Apple Music</div>
+        )}
+      </div>
     </div>
   );
 }

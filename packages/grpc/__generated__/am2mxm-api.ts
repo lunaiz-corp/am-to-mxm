@@ -199,10 +199,13 @@ export class TrackInfo extends pb_1.Message {
         artist?: string;
         mxm_abstrack?: number;
         mxm_track_url?: string;
+        mxm_thumbnail?: string;
         mxm_album?: string;
         mxm_album_url?: string;
         am_track_url?: string;
         am_album_url?: string;
+        am_thumbnail?: string;
+        am_pointcolor?: string;
     }) {
         super();
         pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -222,6 +225,9 @@ export class TrackInfo extends pb_1.Message {
             if ("mxm_track_url" in data && data.mxm_track_url != undefined) {
                 this.mxm_track_url = data.mxm_track_url;
             }
+            if ("mxm_thumbnail" in data && data.mxm_thumbnail != undefined) {
+                this.mxm_thumbnail = data.mxm_thumbnail;
+            }
             if ("mxm_album" in data && data.mxm_album != undefined) {
                 this.mxm_album = data.mxm_album;
             }
@@ -233,6 +239,12 @@ export class TrackInfo extends pb_1.Message {
             }
             if ("am_album_url" in data && data.am_album_url != undefined) {
                 this.am_album_url = data.am_album_url;
+            }
+            if ("am_thumbnail" in data && data.am_thumbnail != undefined) {
+                this.am_thumbnail = data.am_thumbnail;
+            }
+            if ("am_pointcolor" in data && data.am_pointcolor != undefined) {
+                this.am_pointcolor = data.am_pointcolor;
             }
         }
     }
@@ -266,29 +278,47 @@ export class TrackInfo extends pb_1.Message {
     set mxm_track_url(value: string) {
         pb_1.Message.setField(this, 5, value);
     }
-    get mxm_album() {
+    get mxm_thumbnail() {
         return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
     }
-    set mxm_album(value: string) {
+    set mxm_thumbnail(value: string) {
         pb_1.Message.setField(this, 6, value);
     }
-    get mxm_album_url() {
+    get mxm_album() {
         return pb_1.Message.getFieldWithDefault(this, 7, "") as string;
     }
-    set mxm_album_url(value: string) {
+    set mxm_album(value: string) {
         pb_1.Message.setField(this, 7, value);
     }
-    get am_track_url() {
+    get mxm_album_url() {
         return pb_1.Message.getFieldWithDefault(this, 8, "") as string;
     }
-    set am_track_url(value: string) {
+    set mxm_album_url(value: string) {
         pb_1.Message.setField(this, 8, value);
     }
-    get am_album_url() {
+    get am_track_url() {
         return pb_1.Message.getFieldWithDefault(this, 9, "") as string;
     }
-    set am_album_url(value: string) {
+    set am_track_url(value: string) {
         pb_1.Message.setField(this, 9, value);
+    }
+    get am_album_url() {
+        return pb_1.Message.getFieldWithDefault(this, 10, "") as string;
+    }
+    set am_album_url(value: string) {
+        pb_1.Message.setField(this, 10, value);
+    }
+    get am_thumbnail() {
+        return pb_1.Message.getFieldWithDefault(this, 11, "") as string;
+    }
+    set am_thumbnail(value: string) {
+        pb_1.Message.setField(this, 11, value);
+    }
+    get am_pointcolor() {
+        return pb_1.Message.getFieldWithDefault(this, 12, "") as string;
+    }
+    set am_pointcolor(value: string) {
+        pb_1.Message.setField(this, 12, value);
     }
     static fromObject(data: {
         isrc?: string;
@@ -296,10 +326,13 @@ export class TrackInfo extends pb_1.Message {
         artist?: string;
         mxm_abstrack?: number;
         mxm_track_url?: string;
+        mxm_thumbnail?: string;
         mxm_album?: string;
         mxm_album_url?: string;
         am_track_url?: string;
         am_album_url?: string;
+        am_thumbnail?: string;
+        am_pointcolor?: string;
     }): TrackInfo {
         const message = new TrackInfo({});
         if (data.isrc != null) {
@@ -317,6 +350,9 @@ export class TrackInfo extends pb_1.Message {
         if (data.mxm_track_url != null) {
             message.mxm_track_url = data.mxm_track_url;
         }
+        if (data.mxm_thumbnail != null) {
+            message.mxm_thumbnail = data.mxm_thumbnail;
+        }
         if (data.mxm_album != null) {
             message.mxm_album = data.mxm_album;
         }
@@ -329,6 +365,12 @@ export class TrackInfo extends pb_1.Message {
         if (data.am_album_url != null) {
             message.am_album_url = data.am_album_url;
         }
+        if (data.am_thumbnail != null) {
+            message.am_thumbnail = data.am_thumbnail;
+        }
+        if (data.am_pointcolor != null) {
+            message.am_pointcolor = data.am_pointcolor;
+        }
         return message;
     }
     toObject() {
@@ -338,10 +380,13 @@ export class TrackInfo extends pb_1.Message {
             artist?: string;
             mxm_abstrack?: number;
             mxm_track_url?: string;
+            mxm_thumbnail?: string;
             mxm_album?: string;
             mxm_album_url?: string;
             am_track_url?: string;
             am_album_url?: string;
+            am_thumbnail?: string;
+            am_pointcolor?: string;
         } = {};
         if (this.isrc != null) {
             data.isrc = this.isrc;
@@ -358,6 +403,9 @@ export class TrackInfo extends pb_1.Message {
         if (this.mxm_track_url != null) {
             data.mxm_track_url = this.mxm_track_url;
         }
+        if (this.mxm_thumbnail != null) {
+            data.mxm_thumbnail = this.mxm_thumbnail;
+        }
         if (this.mxm_album != null) {
             data.mxm_album = this.mxm_album;
         }
@@ -369,6 +417,12 @@ export class TrackInfo extends pb_1.Message {
         }
         if (this.am_album_url != null) {
             data.am_album_url = this.am_album_url;
+        }
+        if (this.am_thumbnail != null) {
+            data.am_thumbnail = this.am_thumbnail;
+        }
+        if (this.am_pointcolor != null) {
+            data.am_pointcolor = this.am_pointcolor;
         }
         return data;
     }
@@ -386,14 +440,20 @@ export class TrackInfo extends pb_1.Message {
             writer.writeInt32(4, this.mxm_abstrack);
         if (this.mxm_track_url.length)
             writer.writeString(5, this.mxm_track_url);
+        if (this.mxm_thumbnail.length)
+            writer.writeString(6, this.mxm_thumbnail);
         if (this.mxm_album.length)
-            writer.writeString(6, this.mxm_album);
+            writer.writeString(7, this.mxm_album);
         if (this.mxm_album_url.length)
-            writer.writeString(7, this.mxm_album_url);
+            writer.writeString(8, this.mxm_album_url);
         if (this.am_track_url.length)
-            writer.writeString(8, this.am_track_url);
+            writer.writeString(9, this.am_track_url);
         if (this.am_album_url.length)
-            writer.writeString(9, this.am_album_url);
+            writer.writeString(10, this.am_album_url);
+        if (this.am_thumbnail.length)
+            writer.writeString(11, this.am_thumbnail);
+        if (this.am_pointcolor.length)
+            writer.writeString(12, this.am_pointcolor);
         if (!w)
             return writer.getResultBuffer();
     }
@@ -419,16 +479,25 @@ export class TrackInfo extends pb_1.Message {
                     message.mxm_track_url = reader.readString();
                     break;
                 case 6:
-                    message.mxm_album = reader.readString();
+                    message.mxm_thumbnail = reader.readString();
                     break;
                 case 7:
-                    message.mxm_album_url = reader.readString();
+                    message.mxm_album = reader.readString();
                     break;
                 case 8:
-                    message.am_track_url = reader.readString();
+                    message.mxm_album_url = reader.readString();
                     break;
                 case 9:
+                    message.am_track_url = reader.readString();
+                    break;
+                case 10:
                     message.am_album_url = reader.readString();
+                    break;
+                case 11:
+                    message.am_thumbnail = reader.readString();
+                    break;
+                case 12:
+                    message.am_pointcolor = reader.readString();
                     break;
                 default: reader.skipField();
             }
