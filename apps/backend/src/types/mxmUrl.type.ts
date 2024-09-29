@@ -1,5 +1,5 @@
 export interface IMxmUrl {
-  type: EMxmUrlType; // Musixmatch's URL type (e.g. EMxmUrlType.ALBUM)
+  type: EMxmUrlType; // Musixmatch's URL type (e.g. EMxmUrlType.ALBUM_TRACKS)
   id?: string; // Musixmatch's ID (e.g. '12345678')
   vanityId?: string; // Musixmatch's vanity ID (e.g. 'Mingturn/BLUE-EP')
   isrc?: string; // ISRC (e.g. 'KRB472400847')
@@ -7,6 +7,7 @@ export interface IMxmUrl {
 }
 
 export enum EMxmUrlType {
-  ALBUM = 'album.tracks',
+  ALBUM = 'album',
+  ALBUM_TRACKS = 'album.tracks',
   TRACK = 'track',
 }

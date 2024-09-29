@@ -8,8 +8,7 @@ import * as grpc_1 from "@grpc/grpc-js";
 import * as grpc_web_1 from "grpc-web";
 export enum SearchType {
     LINK = 0,
-    SOURCE = 1,
-    ABSTRACK = 2
+    SOURCE = 1
 }
 export class SearchQuery extends pb_1.Message {
     #one_of_decls: number[][] = [];
@@ -205,7 +204,6 @@ export class TrackInfo extends pb_1.Message {
         am_track_url?: string;
         am_album_url?: string;
         am_thumbnail?: string;
-        am_pointcolor?: string;
     }) {
         super();
         pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -242,9 +240,6 @@ export class TrackInfo extends pb_1.Message {
             }
             if ("am_thumbnail" in data && data.am_thumbnail != undefined) {
                 this.am_thumbnail = data.am_thumbnail;
-            }
-            if ("am_pointcolor" in data && data.am_pointcolor != undefined) {
-                this.am_pointcolor = data.am_pointcolor;
             }
         }
     }
@@ -314,12 +309,6 @@ export class TrackInfo extends pb_1.Message {
     set am_thumbnail(value: string) {
         pb_1.Message.setField(this, 11, value);
     }
-    get am_pointcolor() {
-        return pb_1.Message.getFieldWithDefault(this, 12, "") as string;
-    }
-    set am_pointcolor(value: string) {
-        pb_1.Message.setField(this, 12, value);
-    }
     static fromObject(data: {
         isrc?: string;
         title?: string;
@@ -332,7 +321,6 @@ export class TrackInfo extends pb_1.Message {
         am_track_url?: string;
         am_album_url?: string;
         am_thumbnail?: string;
-        am_pointcolor?: string;
     }): TrackInfo {
         const message = new TrackInfo({});
         if (data.isrc != null) {
@@ -368,9 +356,6 @@ export class TrackInfo extends pb_1.Message {
         if (data.am_thumbnail != null) {
             message.am_thumbnail = data.am_thumbnail;
         }
-        if (data.am_pointcolor != null) {
-            message.am_pointcolor = data.am_pointcolor;
-        }
         return message;
     }
     toObject() {
@@ -386,7 +371,6 @@ export class TrackInfo extends pb_1.Message {
             am_track_url?: string;
             am_album_url?: string;
             am_thumbnail?: string;
-            am_pointcolor?: string;
         } = {};
         if (this.isrc != null) {
             data.isrc = this.isrc;
@@ -421,9 +405,6 @@ export class TrackInfo extends pb_1.Message {
         if (this.am_thumbnail != null) {
             data.am_thumbnail = this.am_thumbnail;
         }
-        if (this.am_pointcolor != null) {
-            data.am_pointcolor = this.am_pointcolor;
-        }
         return data;
     }
     serialize(): Uint8Array;
@@ -452,8 +433,6 @@ export class TrackInfo extends pb_1.Message {
             writer.writeString(10, this.am_album_url);
         if (this.am_thumbnail.length)
             writer.writeString(11, this.am_thumbnail);
-        if (this.am_pointcolor.length)
-            writer.writeString(12, this.am_pointcolor);
         if (!w)
             return writer.getResultBuffer();
     }
@@ -495,9 +474,6 @@ export class TrackInfo extends pb_1.Message {
                     break;
                 case 11:
                     message.am_thumbnail = reader.readString();
-                    break;
-                case 12:
-                    message.am_pointcolor = reader.readString();
                     break;
                 default: reader.skipField();
             }

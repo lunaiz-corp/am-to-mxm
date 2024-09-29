@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 interface ISearchResult {
   result: SearchResult | null;
-  setResult: (result: SearchResult) => void;
+  setResult: (result: SearchResult | null) => void;
 }
 
 export const useSearchResultStore = create<ISearchResult>((set) => ({

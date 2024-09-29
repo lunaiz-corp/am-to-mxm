@@ -23,11 +23,17 @@ export function requestToMxm(data: IMxmUrl) {
   const url = new URL(`https://api.musixmatch.com/ws/1.1/${data.type}.get`);
   url.searchParams.set('apikey', process.env.MUSIXMATCH_API_KEY);
 
-  if (data.id && data.type === EMxmUrlType.ALBUM) {
+  if (
+    data.id &&
+    (data.type === EMxmUrlType.ALBUM || data.type === EMxmUrlType.ALBUM_TRACKS)
+  ) {
     url.searchParams.set('album_id', data.id);
   } else if (data.id && EMxmUrlType.TRACK) {
     url.searchParams.set('commontrack_id', data.id);
-  } else if (data.vanityId && EMxmUrlType.ALBUM) {
+  } else if (
+    data.vanityId &&
+    (data.type === EMxmUrlType.ALBUM || data.type === EMxmUrlType.ALBUM_TRACKS)
+  ) {
     url.searchParams.set('album_vanity_id', data.vanityId);
   } else if (data.vanityId && EMxmUrlType.TRACK) {
     url.searchParams.set('commontrack_vanity_id', data.vanityId);

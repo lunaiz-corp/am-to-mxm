@@ -49,7 +49,7 @@ export default function MainSearchArea(
               className="size-[50px] rounded-[10px]"
             />
           </>
-        ) : props.searchType === SearchType.SOURCE ? (
+        ) : (
           <>
             <img
               src={mxmLogo}
@@ -71,45 +71,33 @@ export default function MainSearchArea(
               className="size-[50px] rounded-[10px]"
             />
           </>
+        )}
+      </div>
+
+      <div className="flex items-center gap-3 pr-[66px] pt-8">
+        {props.searchType === SearchType.LINK ? (
+          <>
+            <AmTypography className="h-7 fill-neutral-900" />
+            <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-900">
+              to
+            </span>
+            <MxmTypography className="ml-[2px] mt-[2px] h-8 fill-neutral-900" />
+          </>
         ) : (
           <>
-            <img
-              src={mxmLogo}
-              alt="Musixmatch Logo"
-              className="size-[50px] rounded-[10px]"
-            />
-            <span className="font-sans text-[32px] font-medium text-neutral-900">
-              Abstrack
+            <MxmTypography className="mt-2.5 h-8 fill-neutral-900" />
+            <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-900">
+              to
             </span>
+            <AmTypography className="h-7 fill-neutral-900" />
           </>
         )}
       </div>
 
-      {props.searchType !== SearchType.ABSTRACK && (
-        <div className="flex items-center gap-3 pr-[66px] pt-8">
-          {props.searchType === SearchType.LINK ? (
-            <>
-              <AmTypography className="h-7 fill-neutral-900" />
-              <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-900">
-                to
-              </span>
-              <MxmTypography className="ml-[2px] mt-[2px] h-8 fill-neutral-900" />
-            </>
-          ) : (
-            <>
-              <MxmTypography className="mt-2.5 h-8 fill-neutral-900" />
-              <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-900">
-                to
-              </span>
-              <AmTypography className="h-7 fill-neutral-900" />
-            </>
-          )}
-        </div>
-      )}
-
       <Form
         className="relative mr-28 mt-10 w-[335px]"
-        onSubmit={async () => {
+        onSubmit={async (e) => {
+          e.preventDefault();
           if (!queryRef.current?.value) return;
 
           const response = await client.SearchByQuery(
@@ -120,6 +108,7 @@ export default function MainSearchArea(
             null,
           );
 
+          // eslint-disable-next-line no-console
           console.log(response.toObject());
           setSearchResult(response);
         }}
@@ -157,13 +146,25 @@ export default function MainSearchArea(
 
       <div className="absolute bottom-12 flex flex-col gap-6">
         <div className="flex gap-3 font-sans text-sm font-medium text-neutral-500">
-          <Link to="/guide" className="underline">
-            How to use
-          </Link>
+          <a
+            href="https://lunaiz.rdbl.io/8255520465/am2mxm-guide"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            How to use?
+          </a>
           {props.searchType !== SearchType.LINK && (
             <>
               <span>|</span>
-              <Link to="/" className="underline">
+              <Link
+                to="/"
+                className="underline"
+                onClick={() => {
+                  setSearchResult(null);
+                  queryRef.current!.value = '';
+                }}
+              >
                 Get MXM link
               </Link>
             </>
@@ -171,20 +172,19 @@ export default function MainSearchArea(
           {props.searchType !== SearchType.SOURCE && (
             <>
               <span>|</span>
-              <Link to="/source" className="underline">
+              <Link
+                to="/source"
+                className="underline"
+                onClick={() => {
+                  setSearchResult(null);
+                  queryRef.current!.value = '';
+                }}
+              >
                 Get AM source
               </Link>
             </>
           )}
-          {props.searchType !== SearchType.ABSTRACK && (
-            <>
-              <span>|</span>
-              <Link to="/abstrack" className="underline">
-                Get from abstrack
-              </Link>
-            </>
-          )}
-          {/* <span>|</span>
+          <span>|</span>
           <a
             href="https://spotify-to-mxm.vercel.app/"
             className="underline"
@@ -192,7 +192,7 @@ export default function MainSearchArea(
             rel="noreferrer"
           >
             Get from Spotify
-          </a> */}
+          </a>
         </div>
 
         {/* <a

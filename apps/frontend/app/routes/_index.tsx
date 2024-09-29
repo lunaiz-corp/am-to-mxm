@@ -17,7 +17,7 @@ export default function Index() {
 
   return (
     <div className="flex h-screen w-full flex-col justify-center">
-      <div className="ml-32 mr-16 flex max-h-[calc(100vh-6rem)] flex-col gap-4 overflow-y-auto">
+      <div className="ml-32 mr-16 flex max-h-[calc(100vh-6rem)] flex-col gap-8 overflow-y-auto">
         {searchResult ? (
           searchResult.tracks.map((track) => (
             <TrackCard key={track.mxm_abstrack} track={track} />

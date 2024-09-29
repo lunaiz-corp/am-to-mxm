@@ -7,5 +7,4 @@ export interface ISearchTypeProps {
 export const routes = {
   '/': SearchType.LINK,
   '/source': SearchType.SOURCE,
-  '/abstrack': SearchType.ABSTRACK,
 };

@@ -57,7 +57,7 @@ export function parseMxmUrl(url: string): IMxmUrl {
 
   // URL: https://www.musixmatch.com/album/Mingturn/BLUE-EP
   // id: Mingturn/BLUE-EP
-  // type: EMxmUrlType.ALBUM
+  // type: EMxmUrlType.ALBUM_TRACKS
 
   if (
     urlObj.hostname !== 'www.musixmatch.com' &&
@@ -81,7 +81,7 @@ export function parseMxmUrl(url: string): IMxmUrl {
 
   if (group[1]) {
     return {
-      type: EMxmUrlType.ALBUM,
+      type: EMxmUrlType.ALBUM_TRACKS,
       vanityId: group[1],
       url,
     };
@@ -89,7 +89,7 @@ export function parseMxmUrl(url: string): IMxmUrl {
 
   if (group[2]) {
     return {
-      type: EMxmUrlType.ALBUM,
+      type: EMxmUrlType.ALBUM_TRACKS,
       id: group[2],
       url,
     };

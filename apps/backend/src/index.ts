@@ -42,7 +42,7 @@ if (require.main === module) {
         process.exit(1);
       }
 
-      logger.info(`🚀 lunaiz.am2mxm.api.v1 gRPC is running at ${port}.`);
+      logger.info(`🚀 gRPC Server is running at ${port}!`);
     },
   );
 }

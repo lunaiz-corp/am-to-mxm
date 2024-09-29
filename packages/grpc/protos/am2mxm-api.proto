@@ -25,7 +25,6 @@ service Search {
 enum SearchType {
     LINK     = 0; // Apple Music -> Musixmatch by ISRC
     SOURCE   = 1; // Musixmatch -> Apple Music by ISRC
-    ABSTRACK = 2; // Musixmatch -> Apple Music by abstrack
 }
 
 // Message types definition

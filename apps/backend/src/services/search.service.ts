@@ -30,7 +30,7 @@ import {
 } from '@packages/grpc/__generated__/am2mxm-api';
 
 import cache from '../utils/cache.util';
-import { parseAppleUrl } from '../utils/parseUrl.util';
+import { parseAppleUrl, parseMxmUrl } from '../utils/parseUrl.util';
 import { requestToApple, requestToMxm } from '../utils/request.util';
 import {
   parseResponseFromApple,
@@ -56,9 +56,6 @@ export class SearchService extends UnimplementedSearchService {
     callback: grpc.requestCallback<SearchResult>,
   ) {
     try {
-      logger.debug(call.request);
-      logger.debug(call.request.type, call.request.query);
-
       if (isNil(call.request.type)) {
         throw new BadRequestError('Request missing required field: type');
       }
@@ -70,22 +67,24 @@ export class SearchService extends UnimplementedSearchService {
       if (call.request.type === SearchType.LINK) {
         // Get track/album info from Apple Music
         const parsedAppleUrl = parseAppleUrl(call.request.query);
-        const appleResponse = (await requestToApple(parsedAppleUrl).then(
-          (res) => res.json(),
-        )) as
-          | AppleMusicApi.AlbumResponse
-          | AppleMusicApi.SongResponse
-          | IAppleErrorResponse;
-
-        if ('errors' in appleResponse) {
-          throw new Error(appleResponse.errors.map((e) => e.detail).join('\n'));
-        }
 
         let result = await cache.get<IAppleOptimisedResponse[]>(
           `apple:${parsedAppleUrl.id}`,
         );
 
         if (!result) {
+          const appleResponse = (await requestToApple(parsedAppleUrl).then(
+            (res) => res.json(),
+          )) as
+            | AppleMusicApi.AlbumResponse
+            | AppleMusicApi.SongResponse
+            | IAppleErrorResponse;
+
+          if ('errors' in appleResponse) {
+            throw new Error(
+              appleResponse.errors.map((e) => e.detail).join('\n'),
+            );
+          }
           result = parseResponseFromApple(appleResponse.data);
           cache.set(`apple:${parsedAppleUrl.id}`, result);
         }
@@ -154,9 +153,88 @@ export class SearchService extends UnimplementedSearchService {
           }),
         );
       } else if (call.request.type === SearchType.SOURCE) {
-        // TODO: Implement this
-      } else if (call.request.type === SearchType.ABSTRACK) {
-        // TODO: Implement this
+        // Get track/album info from Musixmatch
+        let parsedMxmUrl = parseMxmUrl(call.request.query);
+        if (parsedMxmUrl.type === EMxmUrlType.ALBUM_TRACKS) {
+          parsedMxmUrl.type = EMxmUrlType.ALBUM;
+        }
+
+        let result: IMxmOptimisedResponse | null = null;
+        if (parsedMxmUrl.type === EMxmUrlType.TRACK) {
+          result = await cache.get<IMxmOptimisedResponse>(
+            `mxm:${parsedMxmUrl.vanityId}`,
+          );
+
+          if (!result) {
+            const r = await requestToMxm(parsedMxmUrl);
+            if (!r.ok) {
+              throw new Error(
+                "The track hasn't been imported yet. Please try again after 1-5 minutes.\n" +
+                  'If the problem persists after 15 minutes, please contact to the developer.',
+              );
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const realResp = (await r.json()) as any;
+            result = parseResponseFromMxm(realResp.message.body);
+            cache.set(`mxm:${parsedMxmUrl.vanityId}`, result);
+          }
+
+          parsedMxmUrl = {
+            type: EMxmUrlType.ALBUM,
+            id: result.album.id,
+            vanityId: result.album.vanityId,
+          };
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let resultAlbum = await cache.get<any>(
+          `mxm-album:${parsedMxmUrl.id || parsedMxmUrl.vanityId}`,
+        );
+
+        if (!resultAlbum) {
+          const r = await requestToMxm(parsedMxmUrl);
+          if (!r.ok) {
+            throw new Error(
+              "The album hasn't been imported yet. Please try again after 1-5 minutes.\n" +
+                'If the problem persists after 15 minutes, please contact to the developer.',
+            );
+          }
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const realResp = (await r.json()) as any;
+          resultAlbum = realResp.message.body.album;
+          cache.set(`mxm=album:${parsedMxmUrl.vanityId}`, resultAlbum);
+        }
+
+        callback(
+          null,
+          new SearchResult({
+            type: SearchType.SOURCE,
+            tracks: [
+              new TrackInfo({
+                isrc: '',
+                title: '',
+                artist: result?.artist.name || resultAlbum.artist_name || '',
+                mxm_abstrack: 0,
+                mxm_track_url: result?.url || '',
+                mxm_thumbnail:
+                  resultAlbum.album_coverart_800x800 ||
+                  resultAlbum.album_coverart_500x500 ||
+                  resultAlbum.album_coverart_350x350 ||
+                  resultAlbum.album_coverart_100x100 ||
+                  'http://s.mxmcdn.net/images-storage/albums/nocover.png',
+                mxm_album: resultAlbum.album_name,
+                mxm_album_url: `https://www.musixmatch.com/album/${resultAlbum.artist_id}/${resultAlbum.album_id}`,
+                am_track_url: '',
+                am_album_url: resultAlbum.external_ids.itunes[0]
+                  ? `https://music.apple.com/album/${resultAlbum.external_ids.itunes[0]}`
+                  : '',
+                am_thumbnail: '',
+              }),
+            ],
+          }),
+        );
       }
     } catch (error) {
       logger.error(error);
