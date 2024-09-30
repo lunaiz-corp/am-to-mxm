@@ -22,7 +22,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
         }`}
       >
         <h3
-          className={`text-lg font-bold ${
+          className={`text-[19px] font-bold ${
             location.pathname === '/source' ? 'ml-5 mt-3' : ''
           }`}
         >
@@ -38,6 +38,22 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           >
             {location.pathname === '/source' ? track.mxm_album : track.title}
           </a>
+
+          {location.pathname === '/' && (
+            <span className="ml-2 text-[11px] font-light">
+              <a
+                href={track.mxm_track_url.replace(
+                  'www.musixmatch.com',
+                  'com-beta.musixmatch.com',
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#f4502d] underline"
+              >
+                (Beta Musixmatch)
+              </a>
+            </span>
+          )}
         </h3>
 
         <div className="flex flex-col gap-[10px] font-light">

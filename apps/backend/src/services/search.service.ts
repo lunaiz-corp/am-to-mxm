@@ -142,7 +142,7 @@ export class SearchService extends UnimplementedSearchService {
                   x.artwork.url['100x100'] ||
                   'http://s.mxmcdn.net/images-storage/albums/nocover.png',
                 mxm_album: x.album.name,
-                mxm_album_url: `https://www.musixmatch.com/album/${x.album.vanityId}`,
+                mxm_album_url: `https://www.musixmatch.com/album/${x.artist.id}/${x.album.id}`,
                 am_track_url: tempAppleResponse.url,
                 am_album_url: `https://music.apple.com/album/${tempAppleResponse.album.id}?i=${tempAppleResponse.id}`,
                 am_thumbnail:
