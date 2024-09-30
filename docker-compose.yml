@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  grpc:
+    image: ghcr.io/lunaiz-corp/am-to-mxm_grpc:latest
+    ports:
+      - 52345:52345
+    env_file:
+      - .env
+    restart: always
+
+  envoy:
+    image: envoyproxy/envoy:v1.30-latest
+    ports:
+      - 52346:52346
+    volumes:
+      - ./apps/backend/envoy.yaml:/etc/envoy/envoy.yaml
+    restart: always
+    networks:
+      - default
+      - nginx-bridge
+
+networks:
+  nginx-bridge:
+    external: true

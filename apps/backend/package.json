@@ -7,10 +7,9 @@
     "dist/src"
   ],
   "scripts": {
-    "start": "node dist/src/index.js",
+    "start": "tsx src/index.ts",
     "dev": "tsx watch src/index",
-    "build": "tsup src/index.ts",
-    "lint": "eslint --ignore-path ../../.gitignore --cache --cache-location ./node_modules/.cache/eslint src/"
+    "lint": "eslint --ignore-path ../../.gitignore src/"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.11.3",
@@ -25,21 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "20.12.7",
-    "tsup": "^8.3.0",
     "tsx": "^4.19.1",
     "typescript": "^5.4.3"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
-    "format": [
-      "esm"
-    ],
-    "sourcemap": true,
-    "treeshake": true,
-    "clean": true,
-    "minify": true,
-    "dts": true
   }
 }

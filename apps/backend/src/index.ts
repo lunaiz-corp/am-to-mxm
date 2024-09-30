@@ -21,7 +21,9 @@ import * as grpc from '@grpc/grpc-js';
 
 import { SearchService } from './services/search.service';
 
-process.loadEnvFile('.env');
+try {
+  process.loadEnvFile('.env');
+} catch {} // eslint-disable-line no-empty
 
 const logger: Logger<ILogObj> = new Logger({
   name: 'lunaiz.am2mxm.api.v1',
