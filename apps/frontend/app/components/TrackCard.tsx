@@ -5,11 +5,20 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
   const location = useLocation();
 
   return (
-    <div className="flex w-[calc(100%-15px)] grow items-center gap-11 rounded-xl bg-neutral-100">
+    <div
+      className={`flex w-[calc(100%-15px)] items-center justify-between rounded-xl bg-neutral-100 xl:justify-start xl:gap-11 ${
+        location.pathname === '/source' ? 'grow' : ''
+      }`}
+    >
       {location.pathname === '/' && (
-        <a href={track.mxm_track_url} target="_blank" rel="noreferrer">
+        <a
+          href={track.mxm_track_url}
+          target="_blank"
+          rel="noreferrer"
+          className="my-3 ml-5 size-32 shrink-0 xl:size-36"
+        >
           <img
-            className="my-3 ml-5 size-36 rounded-xl"
+            className="size-full rounded-xl"
             src={track.am_thumbnail || track.mxm_thumbnail}
             alt={`${track.artist}-${track.title} Thumbnail`}
           />
@@ -22,7 +31,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
         }`}
       >
         <h3
-          className={`text-[19px] font-bold ${
+          className={`w-48 truncate text-[17px] font-bold xl:text-[19px] ${
             location.pathname === '/source' ? 'ml-5 mt-3' : ''
           }`}
         >
@@ -40,7 +49,8 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           </a>
 
           {location.pathname === '/' && (
-            <span className="ml-2 text-[11px] font-light">
+            <span className="ml-2 truncate text-[11px] font-light">
+              <br className="inline xl:hidden" />
               <a
                 href={track.mxm_track_url.replace(
                   'www.musixmatch.com',
@@ -50,13 +60,13 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
                 rel="noreferrer"
                 className="text-[#f4502d] underline"
               >
-                (Beta Musixmatch)
+                (Beta MXM)
               </a>
             </span>
           )}
         </h3>
 
-        <div className="flex flex-col gap-[10px] font-light">
+        <div className="flex flex-col gap-[10px] truncate text-sm font-light xl:text-base">
           {location.pathname === '/' && (
             <>
               <div>

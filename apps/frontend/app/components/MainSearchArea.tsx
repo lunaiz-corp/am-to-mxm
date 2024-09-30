@@ -1,5 +1,4 @@
-import { Form, Link } from '@remix-run/react';
-import { useRef } from 'react';
+import { Form } from '@remix-run/react';
 
 import {
   SearchType,
@@ -9,6 +8,9 @@ import {
 
 import { ISearchTypeProps } from '~/types/search';
 import { useSearchResultStore } from '~/stores/searchResult';
+import { useSearchQueryStore } from '~/stores/searchQuery';
+
+import Footer from '~/components/Footer';
 
 import amLogo from '~/assets/images/am.png';
 import mxmLogo from '~/assets/images/mxm.png';
@@ -20,12 +22,14 @@ export default function MainSearchArea(
   props: ISearchTypeProps = { searchType: SearchType.LINK },
 ) {
   const client = new SearchServiceClient(import.meta.env.VITE_API_URL);
-  const queryRef = useRef<HTMLInputElement>(null);
 
   const setSearchResult = useSearchResultStore((state) => state.setResult);
 
+  const searchQueryString = useSearchQueryStore((state) => state.query);
+  const setSearchQueryString = useSearchQueryStore((state) => state.setQuery);
+
   return (
-    <div className="h-screen max-w-[448px] bg-neutral-100 pl-16 pt-[158px]">
+    <div className="flex flex-col items-center bg-neutral-100 px-8 pb-14 pt-20 md:block md:h-screen md:max-w-[448px] md:px-16 md:pb-0 md:pt-[158px]">
       <div className="flex items-center gap-4">
         {props.searchType === SearchType.LINK ? (
           <>
@@ -74,7 +78,7 @@ export default function MainSearchArea(
         )}
       </div>
 
-      <div className="flex items-center gap-3 pr-[66px] pt-8">
+      <div className="flex items-center gap-3 pt-8">
         {props.searchType === SearchType.LINK ? (
           <>
             <AmTypography className="h-7 fill-neutral-900" />
@@ -95,15 +99,15 @@ export default function MainSearchArea(
       </div>
 
       <Form
-        className="relative mr-28 mt-10 w-[335px]"
+        className="relative mt-10 w-full md:w-[335px]"
         onSubmit={async (e) => {
           e.preventDefault();
-          if (!queryRef.current?.value) return;
+          if (!searchQueryString) return;
 
           const response = await client.SearchByQuery(
             new SearchQuery({
               type: props.searchType,
-              query: queryRef.current.value,
+              query: searchQueryString,
             }),
             null,
           );
@@ -115,8 +119,9 @@ export default function MainSearchArea(
       >
         <input
           id="link-input"
-          ref={queryRef}
           className="peer w-full border-0 border-b-[1.5px] border-b-neutral-800 bg-transparent pb-2.5 pl-1 pr-10 pt-6 text-lg text-neutral-800 outline-none"
+          value={searchQueryString}
+          onChange={(e) => setSearchQueryString(e.target.value)}
           required
         />
 
@@ -144,69 +149,8 @@ export default function MainSearchArea(
         </button>
       </Form>
 
-      <div className="absolute bottom-12 flex flex-col gap-6">
-        <div className="flex gap-3 font-sans text-sm font-medium text-neutral-500">
-          <a
-            href="https://lunaiz.rdbl.io/8255520465/am2mxm-guide"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            How to use?
-          </a>
-          {props.searchType !== SearchType.LINK && (
-            <>
-              <span>|</span>
-              <Link
-                to="/"
-                className="underline"
-                onClick={() => {
-                  setSearchResult(null);
-                  queryRef.current!.value = '';
-                }}
-              >
-                Get MXM link
-              </Link>
-            </>
-          )}
-          {props.searchType !== SearchType.SOURCE && (
-            <>
-              <span>|</span>
-              <Link
-                to="/source"
-                className="underline"
-                onClick={() => {
-                  setSearchResult(null);
-                  queryRef.current!.value = '';
-                }}
-              >
-                Get AM source
-              </Link>
-            </>
-          )}
-          <span>|</span>
-          <a
-            href="https://spotify-to-mxm.vercel.app/"
-            className="underline"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Get from Spotify
-          </a>
-        </div>
-
-        {/* <a
-          href="https://lunaiz.com/"
-          target="_blank"
-          rel="noreferrer"
-          className="text-neutral-500 font-sans text-sm font-medium"
-        >
-          © LUNAIZ Corp.
-        </a> */}
-
-        <span className="font-sans text-sm font-medium text-neutral-500">
-          © LUNAIZ Corp.
-        </span>
+      <div className="absolute bottom-12 hidden flex-col gap-6 md:flex">
+        <Footer searchType={props.searchType} />
       </div>
     </div>
   );

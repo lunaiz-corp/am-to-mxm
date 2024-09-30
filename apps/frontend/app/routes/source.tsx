@@ -15,8 +15,8 @@ export default function Source() {
   const searchResult = useSearchResultStore((state) => state.result);
 
   return (
-    <div className="flex h-screen w-full flex-col justify-center">
-      <div className="ml-32 mr-16 flex max-h-[calc(100vh-6rem)] flex-col gap-8 overflow-y-auto">
+    <div className="flex min-h-[calc(100vh-478px)] w-full flex-col px-3 pb-16 md:h-screen md:min-h-[initial] md:justify-center md:pb-0">
+      <div className="mx-0 flex flex-col gap-8 md:ml-32 md:mr-8 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto xl:mr-16">
         {searchResult ? (
           searchResult.tracks.map((track) => (
             <TrackCard

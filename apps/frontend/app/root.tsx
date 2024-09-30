@@ -11,6 +11,8 @@ import 'normalize.css';
 import '~/styles/tailwind.css';
 
 import MainSearchArea from '~/components/MainSearchArea';
+import Footer from '~/components/Footer';
+
 import { routes } from '~/types/search';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -81,7 +83,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
-        <div className="flex min-h-screen">
+        <div className="flex flex-col md:min-h-screen md:flex-row">
           {Object.keys(routes).includes(location.pathname) && (
             <MainSearchArea
               searchType={routes[location.pathname as keyof typeof routes]}
@@ -89,6 +91,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
 
           {children}
+
+          {Object.keys(routes).includes(location.pathname) && (
+            <div className="flex flex-col items-center gap-6 pb-12 md:hidden">
+              <Footer
+                searchType={routes[location.pathname as keyof typeof routes]}
+              />
+            </div>
+          )}
         </div>
 
         <ScrollRestoration />
