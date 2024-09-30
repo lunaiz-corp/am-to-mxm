@@ -6,7 +6,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
   return (
     <div
-      className={`flex w-[calc(100%-15px)] items-center justify-between rounded-xl bg-neutral-100 xl:justify-start xl:gap-11 ${
+      className={`flex w-[calc(100%-15px)] items-center justify-center xl:justify-start gap-7 xl:gap-11 rounded-xl bg-neutral-100 ${
         location.pathname === '/source' ? 'grow' : ''
       }`}
     >
@@ -15,7 +15,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           href={track.mxm_track_url}
           target="_blank"
           rel="noreferrer"
-          className="my-3 ml-5 size-32 shrink-0 xl:size-36"
+          className="my-3 ml-5 size-32 shrink-0 md:size-32 xl:size-36"
         >
           <img
             className="size-full rounded-xl"
@@ -31,7 +31,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
         }`}
       >
         <h3
-          className={`w-48 truncate text-[17px] font-bold xl:text-[19px] ${
+          className={`text-[17px] font-bold xl:text-[19px] ${
             location.pathname === '/source' ? 'ml-5 mt-3' : ''
           }`}
         >
@@ -43,7 +43,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
             }
             target="_blank"
             rel="noreferrer"
-            className="text-[#f4502d] underline"
+            className="truncate text-[#f4502d] underline md:w-48"
           >
             {location.pathname === '/source' ? track.mxm_album : track.title}
           </a>
