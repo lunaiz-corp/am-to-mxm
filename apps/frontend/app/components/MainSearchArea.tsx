@@ -15,7 +15,7 @@ import { Logger } from '~/utils/logger';
 import Footer from '~/components/Footer';
 
 import AmLogo from '~/assets/images/am.svg?react';
-import MxmLogo from '~/assets/images/mxm.svg?react';
+import MxmAppLogo from '~/assets/images/mxm.webp';
 
 import AmTypography from '~/assets/images/am_typography.svg?react';
 import MxmTypography from '~/assets/images/mxm_typography.svg?react';
@@ -76,16 +76,18 @@ export default function MainSearchArea(
             >
               arrow_right_alt
             </span>
-            <MxmLogo
+            <img
+              src={MxmAppLogo}
               className="size-[50px] rounded-[10px]"
-              aria-label="Musixmatch Logo"
+              alt="Musixmatch Logo"
             />
           </>
         ) : (
           <>
-            <MxmLogo
+            <img
+              src={MxmAppLogo}
               className="size-[50px] rounded-[10px]"
-              aria-label="Musixmatch Logo"
+              alt="Musixmatch Logo"
             />
             <span
               className="material-symbols-rounded size-[40px] !text-[40px]"
