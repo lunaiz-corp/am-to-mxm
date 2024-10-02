@@ -10,7 +10,7 @@ services:
     restart: always
 
   envoy:
-    image: envoyproxy/envoy:v1.30-latest
+    image: envoyproxy/envoy:v1.31-latest
     ports:
       - 52346:52346
     volumes:
