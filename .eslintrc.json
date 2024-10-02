@@ -28,6 +28,7 @@
       {
         "officialSorting": true
       }
-    ]
+    ],
+    "implicit-arrow-linebreak": "off"
   }
 }

@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
   useLocation,
 } from '@remix-run/react';
+import { ManifestLink } from '@remix-pwa/sw';
 
 import 'normalize.css';
 import '~/styles/tailwind.css';
@@ -25,7 +26,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <Meta />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+        <meta name="application-name" content="AM to MxM" />
+        <meta name="apple-mobile-web-app-title" content="AM to MxM" />
+
+        <meta name="theme-color" content="#f5f5f5" />
+        <meta name="msapplication-navbutton-color" content="#fd5e6e" />
+        <meta name="msapplication-starturl" content="/" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+
         <Links />
+        <ManifestLink />
+
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="shortcut icon" href="/favicon.svg" />
+        <link
+          rel="apple-touch-icon"
+          sizes="192x192"
+          href="/pwa/icons/maskable_icon_192x192.png"
+        />
 
         <link
           rel="preconnect"
@@ -37,11 +61,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link
-          rel="preconnect"
-          href="https://cdn.jsdelivr.net"
-          crossOrigin="anonymous"
-        />
 
         <link
           rel="stylesheet"
@@ -49,7 +68,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <link
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
         />
 
         {/* Google Tag Manager */}
@@ -83,7 +102,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
-        <div className="flex flex-col md:min-h-screen md:flex-row">
+        <div className="flex flex-col lg:min-h-screen lg:flex-row">
           {Object.keys(routes).includes(location.pathname) && (
             <MainSearchArea
               searchType={routes[location.pathname as keyof typeof routes]}
@@ -93,7 +112,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
 
           {Object.keys(routes).includes(location.pathname) && (
-            <div className="flex flex-col items-center gap-6 pb-12 md:hidden">
+            <div className="flex flex-col items-center gap-6 pb-12 lg:hidden">
               <Footer
                 searchType={routes[location.pathname as keyof typeof routes]}
               />
