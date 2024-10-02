@@ -6,7 +6,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
   return (
     <div
-      className={`flex w-[calc(100%-15px)] items-center justify-center xl:justify-start gap-7 xl:gap-11 rounded-xl bg-neutral-100 ${
+      className={`flex w-full items-center justify-center gap-7 rounded-xl bg-neutral-100 lg:w-[calc(100%-15px)] xl:justify-start xl:gap-11 ${
         location.pathname === '/source' ? 'grow' : ''
       }`}
     >
@@ -15,7 +15,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           href={track.mxm_track_url}
           target="_blank"
           rel="noreferrer"
-          className="my-3 ml-5 size-32 shrink-0 md:size-32 xl:size-36"
+          className="xs:size-32 my-6 size-28 shrink-0 lg:my-3 lg:size-32 xl:ml-5 xl:size-36"
         >
           <img
             className="size-full rounded-xl"
@@ -27,15 +27,16 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
       <div
         className={`flex flex-col gap-[15px] ${
-          location.pathname === '/source' ? 'w-full' : ''
+          location.pathname === '/source'
+            ? 'w-full'
+            : 'xs:min-w-[210px] min-w-[192px] sm:min-w-[278px] xl:min-w-[262px]'
         }`}
       >
-        <h3
-          className={`text-[17px] font-bold xl:text-[19px] ${
-            location.pathname === '/source' ? 'ml-5 mt-3' : ''
-          }`}
-        >
+        <div className="flex flex-col gap-2 lg:flex-row">
           <a
+            className={`inline-block max-w-48 truncate text-[17px] font-bold leading-[17px] text-[#fd5e6e] underline xl:max-w-[inherit] ${
+              location.pathname === '/source' ? 'ml-5 mt-3' : ''
+            }`}
             href={
               location.pathname === '/source'
                 ? track.am_album_url
@@ -43,13 +44,12 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
             }
             target="_blank"
             rel="noreferrer"
-            className="truncate text-[#f4502d] underline md:w-48"
           >
             {location.pathname === '/source' ? track.mxm_album : track.title}
           </a>
 
           {location.pathname === '/' && (
-            <span className="ml-2 truncate text-[11px] font-light">
+            <span className="text-[11px] font-light leading-[7px] xl:leading-[21px]">
               <br className="inline xl:hidden" />
               <a
                 href={track.mxm_track_url.replace(
@@ -58,24 +58,24 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
                 )}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#f4502d] underline"
+                className="text-[#fd5e6e] underline"
               >
                 (Beta MXM)
               </a>
             </span>
           )}
-        </h3>
+        </div>
 
         <div className="flex flex-col gap-[10px] truncate text-sm font-light xl:text-base">
           {location.pathname === '/' && (
             <>
               <div>
-                <span className="text-black">Album:&nbsp;</span>
+                <span className="truncate text-black">Album:&nbsp;</span>
                 <a
                   href={track.mxm_album_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-medium text-[#f4502d] underline"
+                  className="font-medium text-[#fd5e6e] underline"
                 >
                   {track.mxm_album}
                 </a>
@@ -83,11 +83,17 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
               <div>
                 <span className="text-black">ISRC:&nbsp;</span>
-                <span className="font-medium text-black">{track.isrc}</span>
+                <span className="truncate font-medium text-black">
+                  {track.isrc}
+                </span>
               </div>
 
               <div>
-                <span className="text-black">Abstrack (Track ID):&nbsp;</span>
+                <span className="truncate text-black">
+                  Abstrack
+                  <span className="hidden lg:inline">&nbsp;(Track ID)</span>
+                  :&nbsp;
+                </span>
                 <span className="font-medium text-black">
                   {track.mxm_abstrack}
                 </span>
@@ -108,7 +114,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
                   href={track.am_album_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-medium text-[#f4502d] underline"
+                  className="font-medium text-[#fd5e6e] underline"
                 >
                   {track.mxm_album}
                 </a>

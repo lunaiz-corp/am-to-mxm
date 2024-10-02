@@ -1,4 +1,4 @@
-import { Form } from '@remix-run/react';
+import { Form, useSearchParams } from '@remix-run/react';
 
 import {
   SearchType,
@@ -10,33 +10,62 @@ import { ISearchTypeProps } from '~/types/search';
 import { useSearchResultStore } from '~/stores/searchResult';
 import { useSearchQueryStore } from '~/stores/searchQuery';
 
+import { Logger } from '~/utils/logger';
+
 import Footer from '~/components/Footer';
 
-import amLogo from '~/assets/images/am.png';
-import mxmLogo from '~/assets/images/mxm.png';
+import AmLogo from '~/assets/images/am.svg?react';
+import MxmLogo from '~/assets/images/mxm.svg?react';
 
 import AmTypography from '~/assets/images/am_typography.svg?react';
 import MxmTypography from '~/assets/images/mxm_typography.svg?react';
+import { useEffect, useMemo, useRef } from 'react';
 
 export default function MainSearchArea(
   props: ISearchTypeProps = { searchType: SearchType.LINK },
 ) {
-  const client = new SearchServiceClient(import.meta.env.VITE_API_URL);
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  const client = useMemo(
+    () => new SearchServiceClient(import.meta.env.VITE_API_URL),
+    [],
+  );
+
+  const isLoaded = useRef(false);
   const setSearchResult = useSearchResultStore((state) => state.setResult);
 
   const searchQueryString = useSearchQueryStore((state) => state.query);
   const setSearchQueryString = useSearchQueryStore((state) => state.setQuery);
 
+  useEffect(() => {
+    (async () => {
+      if (searchParams.has('q') && !isLoaded.current) {
+        setSearchQueryString(searchParams.get('q')!);
+        isLoaded.current = true;
+
+        const response = await client.SearchByQuery(
+          new SearchQuery({
+            type: props.searchType,
+            query: searchParams.get('q')!,
+          }),
+          null,
+        );
+
+        // eslint-disable-next-line no-console
+        Logger.debug('gRPC Response:', response.toObject());
+        setSearchResult(response);
+      }
+    })();
+  });
+
   return (
-    <div className="flex flex-col items-center bg-neutral-100 px-8 pb-14 pt-20 md:block md:h-screen md:max-w-[448px] md:px-16 md:pb-0 md:pt-[158px]">
+    <div className="flex flex-col items-center px-8 pb-14 pt-20 lg:block lg:h-screen lg:max-w-[448px] lg:bg-neutral-100 lg:px-16 lg:pb-0 lg:pt-[158px]">
       <div className="flex items-center gap-4">
         {props.searchType === SearchType.LINK ? (
           <>
-            <img
-              src={amLogo}
-              alt="Apple Music Logo"
+            <AmLogo
               className="size-[50px] rounded-[10px]"
+              aria-label="Apple Music Logo"
             />
             <span
               className="material-symbols-rounded size-[40px] !text-[40px]"
@@ -47,18 +76,16 @@ export default function MainSearchArea(
             >
               arrow_right_alt
             </span>
-            <img
-              src={mxmLogo}
-              alt="Musixmatch Logo"
+            <MxmLogo
               className="size-[50px] rounded-[10px]"
+              aria-label="Musixmatch Logo"
             />
           </>
         ) : (
           <>
-            <img
-              src={mxmLogo}
-              alt="Musixmatch Logo"
+            <MxmLogo
               className="size-[50px] rounded-[10px]"
+              aria-label="Musixmatch Logo"
             />
             <span
               className="material-symbols-rounded size-[40px] !text-[40px]"
@@ -69,10 +96,9 @@ export default function MainSearchArea(
             >
               arrow_right_alt
             </span>
-            <img
-              src={amLogo}
-              alt="Apple Music Logo"
+            <AmLogo
               className="size-[50px] rounded-[10px]"
+              aria-label="Apple Music Logo"
             />
           </>
         )}
@@ -99,7 +125,7 @@ export default function MainSearchArea(
       </div>
 
       <Form
-        className="relative mt-10 w-full md:w-[335px]"
+        className="relative mt-10 w-full lg:w-[335px]"
         onSubmit={async (e) => {
           e.preventDefault();
           if (!searchQueryString) return;
@@ -113,8 +139,9 @@ export default function MainSearchArea(
           );
 
           // eslint-disable-next-line no-console
-          console.log(response.toObject());
+          Logger.debug('gRPC Response:', response.toObject());
           setSearchResult(response);
+          setSearchParams({ ...searchParams, q: searchQueryString });
         }}
       >
         <input
@@ -131,9 +158,7 @@ export default function MainSearchArea(
         >
           {props.searchType === SearchType.LINK
             ? 'Apple Music Track/Album link or ISRC'
-            : props.searchType === SearchType.SOURCE
-              ? 'Musixmatch Track/Album link or Abstrack'
-              : 'Musixmatch Abstrack'}
+            : 'Musixmatch Track/Album link'}
         </label>
 
         <button type="submit">
@@ -149,7 +174,7 @@ export default function MainSearchArea(
         </button>
       </Form>
 
-      <div className="absolute bottom-12 hidden flex-col gap-6 md:flex">
+      <div className="absolute bottom-12 hidden flex-col gap-6 lg:flex">
         <Footer searchType={props.searchType} />
       </div>
     </div>

@@ -16,14 +16,16 @@ export default function Index() {
   const searchResult = useSearchResultStore((state) => state.result);
 
   return (
-    <div className="flex min-h-[calc(100vh-478px)] w-full flex-col px-3 pb-16 md:h-screen md:min-h-[initial] md:justify-center md:pb-0">
-      <div className="mx-0 flex flex-col gap-8 md:ml-32 md:mr-8 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto xl:mr-16">
+    <div className="flex min-h-[calc(100vh-478px)] w-full flex-col items-center px-3 pb-16 lg:h-screen lg:min-h-[initial] lg:justify-center lg:pb-0 xl:items-start">
+      <div className="mx-0 flex w-full max-w-[480px] flex-col gap-8 lg:ml-16 lg:mr-8 lg:max-h-[calc(100vh-6rem)] lg:w-[calc(100%-6rem)] lg:max-w-none lg:overflow-y-auto xl:ml-32 xl:mr-16 xl:w-[calc(100%-12rem)]">
         {searchResult ? (
           searchResult.tracks.map((track) => (
             <TrackCard key={track.mxm_abstrack} track={track} />
           ))
         ) : (
-          <div className="text-center">Search for a track on Apple Music</div>
+          <div className="hidden text-center lg:inline">
+            Search for a track on Apple Music
+          </div>
         )}
       </div>
     </div>
