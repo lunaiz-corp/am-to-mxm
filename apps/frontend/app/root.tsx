@@ -43,12 +43,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
         <ManifestLink />
 
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="shortcut icon" href="/favicon.svg" />
         <link
           rel="apple-touch-icon"
-          sizes="192x192"
-          href="/pwa/icons/maskable_icon_192x192.png"
+          sizes="128x128"
+          href="/pwa/icons/maskable_icon_128x128.png"
         />
 
         <link

@@ -16,7 +16,7 @@ export const loader = () =>
         },
         {
           src: '/pwa/icons/maskable_icon_72x72.png',
-          sizes: '48x48',
+          sizes: '72x72',
           type: 'image/png',
         },
         {
