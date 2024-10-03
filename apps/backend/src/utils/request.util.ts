@@ -6,7 +6,13 @@ import { EMxmUrlType, IMxmUrl } from '../types/mxmUrl.type';
 import { getAppleDeveloperToken } from './appleToken.util';
 
 export async function requestToApple(data: IAppleMusicUrl) {
-  const url = `https://api.music.apple.com/v1/catalog/${data.storefront}/${data.type}/${data.id}`;
+  let url = `https://api.music.apple.com/v1/catalog/${data.storefront}/${data.type}`;
+
+  if (data.url === 'ISRC') {
+    url += `?filter[isrc]=${data.id}`;
+  } else {
+    url += `/${data.id}`;
+  }
 
   return fetch(url, {
     headers: {
