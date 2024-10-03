@@ -23,12 +23,24 @@
     "plugin:tailwindcss/recommended"
   ],
   "rules": {
+    "react": {
+      "version": "detect"
+    },
+    "formComponents": ["Form"],
+    "linkComponents": [
+      { "name": "Link", "linkAttribute": "to" },
+      { "name": "NavLink", "linkAttribute": "to" }
+    ],
+    "import/resolver": {
+      "typescript": {}
+    },
     "tailwindcss/classnames-order": [
       "warn",
       {
         "officialSorting": true
       }
     ],
-    "implicit-arrow-linebreak": "off"
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off"
   }
 }

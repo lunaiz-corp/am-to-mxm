@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef } from 'react';
 import { Form, useSearchParams } from '@remix-run/react';
 
 import {
@@ -9,9 +10,11 @@ import {
 import { ISearchTypeProps } from '~/types/search';
 import { useSearchResultStore } from '~/stores/searchResult';
 import { useSearchQueryStore } from '~/stores/searchQuery';
+import { useModalDataStore } from '~/stores/modal';
 
 import { Logger } from '~/utils/logger';
 
+import Modal from '~/components/Modal';
 import Footer from '~/components/Footer';
 
 import AmLogo from '~/assets/images/am.svg?react';
@@ -19,7 +22,6 @@ import MxmAppLogo from '~/assets/images/mxm.webp';
 
 import AmTypography from '~/assets/images/am_typography.svg?react';
 import MxmTypography from '~/assets/images/mxm_typography.svg?react';
-import { useEffect, useMemo, useRef } from 'react';
 
 export default function MainSearchArea(
   props: ISearchTypeProps = { searchType: SearchType.LINK },
@@ -37,23 +39,45 @@ export default function MainSearchArea(
   const searchQueryString = useSearchQueryStore((state) => state.query);
   const setSearchQueryString = useSearchQueryStore((state) => state.setQuery);
 
+  const setModalData = useModalDataStore((state) => state.setData);
+
   useEffect(() => {
     (async () => {
       if (searchParams.has('q') && !isLoaded.current) {
         setSearchQueryString(searchParams.get('q')!);
         isLoaded.current = true;
 
-        const response = await client.SearchByQuery(
-          new SearchQuery({
-            type: props.searchType,
-            query: searchParams.get('q')!,
-          }),
-          null,
-        );
+        try {
+          const response = await client.SearchByQuery(
+            new SearchQuery({
+              type: props.searchType,
+              query: searchParams.get('q')!,
+            }),
+            null,
+          );
 
-        // eslint-disable-next-line no-console
-        Logger.debug('gRPC Response:', response.toObject());
-        setSearchResult(response);
+          Logger.debug('gRPC Response:', response.toObject());
+          setSearchResult(response);
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          const message = error.message.toString();
+          const hasNewLine = message.includes('\n');
+
+          setModalData({
+            level: 'error',
+            title:
+              (hasNewLine && message.split('\n')[0]) ||
+              'Whoopsie, we ran into an error...',
+            message:
+              (hasNewLine && message.split('\n')[1]) ||
+              error.message ||
+              'We are sorry, but something went wrong. Please try again later.',
+            status: `RpcError ${error.code}`,
+          });
+
+          throw error;
+        }
       }
     })();
   });
@@ -132,18 +156,38 @@ export default function MainSearchArea(
           e.preventDefault();
           if (!searchQueryString) return;
 
-          const response = await client.SearchByQuery(
-            new SearchQuery({
-              type: props.searchType,
-              query: searchQueryString,
-            }),
-            null,
-          );
+          try {
+            const response = await client.SearchByQuery(
+              new SearchQuery({
+                type: props.searchType,
+                query: searchQueryString,
+              }),
+              null,
+            );
 
-          // eslint-disable-next-line no-console
-          Logger.debug('gRPC Response:', response.toObject());
-          setSearchResult(response);
-          setSearchParams({ ...searchParams, q: searchQueryString });
+            Logger.debug('gRPC Response:', response.toObject());
+            setSearchResult(response);
+            setSearchParams({ ...searchParams, q: searchQueryString });
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            const message = error.message.toString();
+            const hasNewLine = message.includes('\n');
+
+            setModalData({
+              level: 'error',
+              title:
+                (hasNewLine && message.split('\n')[0]) ||
+                'Whoopsie, we ran into an error...',
+              message:
+                (hasNewLine && message.split('\n')[1]) ||
+                error.message ||
+                'We are sorry, but something went wrong. Please try again later.',
+              status: `RpcError ${error.code}`,
+            });
+
+            throw error;
+          }
         }}
       >
         <input
@@ -179,6 +223,8 @@ export default function MainSearchArea(
       <div className="absolute bottom-12 hidden flex-col gap-6 lg:flex">
         <Footer searchType={props.searchType} />
       </div>
+
+      <Modal />
     </div>
   );
 }
