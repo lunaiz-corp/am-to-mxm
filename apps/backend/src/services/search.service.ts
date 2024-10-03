@@ -169,8 +169,8 @@ export class SearchService extends UnimplementedSearchService {
             const r = await requestToMxm(parsedMxmUrl);
             if (!r.ok) {
               throw new Error(
-                "The track hasn't been imported yet. Please try again after 1-5 minutes.\n" +
-                  'If the problem persists after 15 minutes, please contact to the developer.',
+                "The track hasn't been imported yet. Please request Mxm team to import this track.\n" +
+                  'You can request them by sending the track URL in #catalogue-issues in Community Slack.',
               );
             }
 
@@ -196,8 +196,8 @@ export class SearchService extends UnimplementedSearchService {
           const r = await requestToMxm(parsedMxmUrl);
           if (!r.ok) {
             throw new Error(
-              "The album hasn't been imported yet. Please try again after 1-5 minutes.\n" +
-                'If the problem persists after 15 minutes, please contact to the developer.',
+              "The album hasn't been imported yet. Please request Mxm team to import this album.\n" +
+                'You can request them by sending the album URL in #catalogue-issues in Community Slack.',
             );
           }
 

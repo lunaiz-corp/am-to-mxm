@@ -149,11 +149,11 @@ const routes = {
     hasWorkerAction: false,
     module: route2
   },
-  "routes/_index": {
-    id: "routes/_index",
+  "routes/source": {
+    id: "routes/source",
     parentId: "root",
-    path: void 0,
-    index: true,
+    path: "source",
+    index: void 0,
     caseSensitive: void 0,
     hasLoader: false,
     hasAction: false,
@@ -161,11 +161,11 @@ const routes = {
     hasWorkerAction: false,
     module: route3
   },
-  "routes/source": {
-    id: "routes/source",
+  "routes/_index": {
+    id: "routes/_index",
     parentId: "root",
-    path: "source",
-    index: void 0,
+    path: void 0,
+    index: true,
     caseSensitive: void 0,
     hasLoader: false,
     hasAction: false,
