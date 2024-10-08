@@ -26,18 +26,18 @@ export default function BottomSettings() {
       {/* Settings toggle button */}
       <button
         type="button"
-        className="relative flex items-center justify-center size-16 bg-black/20 dark:bg-black/40 backdrop-blur-lg rounded-full z-50"
+        className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
         title="Settings"
         onClick={() => setIsSettingsOpen((x) => !x)}
       >
         <AdjustmentsHorizontalIcon
-          className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-7 stroke-neutral-950 dark:stroke-neutral-50 stroke-2 !transition-opacity ${
+          className={`absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 stroke-neutral-950 stroke-2 !transition-opacity dark:stroke-neutral-50 ${
             isSettingsOpen ? 'opacity-0' : 'opacity-100'
           }`}
         />
 
         <XMarkIcon
-          className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-7 stroke-neutral-950 dark:stroke-neutral-50 stroke-2 !transition-opacity ${
+          className={`absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 stroke-neutral-950 stroke-2 !transition-opacity dark:stroke-neutral-50 ${
             !isSettingsOpen ? 'opacity-0' : 'opacity-100'
           }`}
         />
@@ -48,7 +48,7 @@ export default function BottomSettings() {
           {/* Darkmode toggle */}
           <button
             type="button"
-            className="relative flex items-center justify-center size-16 bg-black/20 dark:bg-black/40 backdrop-blur-lg rounded-full z-50"
+            className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
             title={
               theme.startsWith('system')
                 ? 'Change to light mode'
@@ -61,19 +61,19 @@ export default function BottomSettings() {
             }}
           >
             <SunIcon
-              className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-7 ${theme === 'system_dark' ? 'stroke-neutral-50' : 'stroke-neutral-950'} !transition-opacity !duration-75 ${
+              className={`absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 ${theme === 'system_dark' ? 'stroke-neutral-50' : 'stroke-neutral-950'} !transition-opacity !duration-75 ${
                 !theme.startsWith('system') ? 'opacity-0' : 'opacity-100'
               }`}
             />
 
             <MoonIcon
-              className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-7 stroke-neutral-950 !transition-opacity !duration-75 ${
+              className={`absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 stroke-neutral-950 !transition-opacity !duration-75 ${
                 theme !== 'light' ? 'opacity-0' : 'opacity-100'
               }`}
             />
 
             <ComputerDesktopIcon
-              className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-7 stroke-neutral-50 !transition-opacity !duration-75 ${
+              className={`absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 stroke-neutral-50 !transition-opacity !duration-75 ${
                 theme !== 'dark' ? 'opacity-0' : 'opacity-100'
               }`}
             />
@@ -82,7 +82,7 @@ export default function BottomSettings() {
           {/* Bring-Your-Own-Key */}
           <button
             type="button"
-            className="relative flex items-center justify-center size-16 bg-black/20 dark:bg-black/40 backdrop-blur-lg rounded-full z-50"
+            className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
             title="Bring-Your-Own-Key Setup (Coming soon)"
             onClick={() => {
               setModal({
@@ -94,7 +94,7 @@ export default function BottomSettings() {
               });
             }}
           >
-            <KeyIcon className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute size-6 stroke-neutral-50" />
+            <KeyIcon className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 stroke-neutral-50" />
           </button>
         </>
       )}

@@ -6,7 +6,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
   return (
     <div
-      className={`flex w-full items-center justify-center gap-7 rounded-xl bg-neutral-100 dark:bg-neutral-700 dark:lg:bg-neutral-800 lg:w-[calc(100%-15px)] xl:justify-start xl:gap-11 ${
+      className={`flex w-full items-center justify-center gap-7 rounded-xl bg-neutral-100 lg:w-[calc(100%-15px)] xl:justify-start xl:gap-11 dark:bg-neutral-700 dark:lg:bg-neutral-800 ${
         location.pathname === '/source' ? 'grow' : ''
       }`}
     >

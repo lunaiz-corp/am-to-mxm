@@ -97,7 +97,7 @@ export default function MainSearchArea(
   });
 
   return (
-    <div className="flex flex-col items-center px-8 pb-14 pt-20 lg:block lg:h-screen lg:max-w-[448px] lg:bg-neutral-100 dark:lg:bg-neutral-800 lg:px-16 lg:pb-0 lg:pt-[158px]">
+    <div className="flex flex-col items-center px-8 pb-14 pt-20 lg:block lg:h-screen lg:max-w-[448px] lg:bg-neutral-100 lg:px-16 lg:pb-0 lg:pt-[158px] dark:lg:bg-neutral-800">
       <div className="flex items-center gap-4">
         {props.searchType === SearchType.LINK ? (
           <>
@@ -221,14 +221,14 @@ export default function MainSearchArea(
       >
         <input
           id="link-input"
-          className="peer w-full border-0 border-b-[1.5px] border-b-neutral-800 dark:border-b-neutral-200 bg-transparent pb-2.5 pl-1 pr-10 pt-6 text-lg text-neutral-800 dark:text-neutral-100 outline-none"
+          className="peer w-full border-0 border-b-[1.5px] border-b-neutral-800 bg-transparent pb-2.5 pl-1 pr-10 pt-6 text-lg text-neutral-800 outline-none dark:border-b-neutral-200 dark:text-neutral-100"
           value={searchQueryString}
           onChange={(e) => setSearchQueryString(e.target.value)}
           required
         />
 
         <label
-          className="absolute left-1 top-[25.5px] font-sans text-base text-neutral-400 transition-all duration-500 ease-in-out peer-valid:top-0 peer-valid:text-sm peer-valid:text-neutral-800 dark:peer-valid:text-neutral-200 peer-focus:top-0 peer-focus:text-sm peer-focus:text-neutral-800 dark:peer-focus:text-neutral-200"
+          className="absolute left-1 top-[25.5px] font-sans text-base text-neutral-400 transition-all duration-500 ease-in-out peer-valid:top-0 peer-valid:text-sm peer-valid:text-neutral-800 peer-focus:top-0 peer-focus:text-sm peer-focus:text-neutral-800 dark:peer-valid:text-neutral-200 dark:peer-focus:text-neutral-200"
           htmlFor="link-input"
         >
           {props.searchType === SearchType.LINK
