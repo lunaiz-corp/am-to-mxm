@@ -23,7 +23,7 @@ export default function Index() {
             <TrackCard key={track.mxm_abstrack} track={track} />
           ))
         ) : (
-          <div className="hidden text-center lg:inline">
+          <div className="hidden text-center text-neutral-950 lg:inline dark:text-neutral-50">
             Search for a track on Apple Music
           </div>
         )}

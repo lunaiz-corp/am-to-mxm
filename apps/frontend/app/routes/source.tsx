@@ -25,7 +25,7 @@ export default function Source() {
             />
           ))
         ) : (
-          <div className="hidden text-center lg:inline">
+          <div className="hidden text-center text-neutral-950 lg:inline dark:text-neutral-50">
             Search for a track on Musixmatch
           </div>
         )}

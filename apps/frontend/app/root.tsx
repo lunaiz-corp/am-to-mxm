@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import {
   Links,
   Meta,
@@ -13,11 +15,23 @@ import '~/styles/tailwind.css';
 
 import MainSearchArea from '~/components/MainSearchArea';
 import Footer from '~/components/Footer';
+import Modal from '~/components/Modal';
+import BottomSettings from '~/components/BottomSettings';
 
 import { routes } from '~/types/search';
 
+import { initTheme } from '~/utils/theme';
+import { useThemeStore } from '~/stores/theme';
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+
+  const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
+
+  useEffect(() => {
+    initTheme(theme, setTheme);
+  });
 
   return (
     <html lang="en">
@@ -102,22 +116,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
-        <div className="flex flex-col lg:min-h-screen lg:flex-row">
-          {Object.keys(routes).includes(location.pathname) && (
-            <MainSearchArea
-              searchType={routes[location.pathname as keyof typeof routes]}
-            />
-          )}
-
-          {children}
-
-          {Object.keys(routes).includes(location.pathname) && (
-            <div className="flex flex-col items-center gap-6 pb-12 lg:hidden">
-              <Footer
+        <div className="bg-neutral-50 dark:bg-neutral-800 dark:lg:bg-neutral-950">
+          <main className="flex flex-col lg:min-h-screen lg:flex-row">
+            {Object.keys(routes).includes(location.pathname) && (
+              <MainSearchArea
                 searchType={routes[location.pathname as keyof typeof routes]}
               />
-            </div>
-          )}
+            )}
+
+            {children}
+
+            {Object.keys(routes).includes(location.pathname) && (
+              <div className="flex flex-col items-center gap-6 pb-12 lg:hidden">
+                <Footer
+                  searchType={routes[location.pathname as keyof typeof routes]}
+                />
+              </div>
+            )}
+          </main>
+
+          <Modal />
+          <BottomSettings />
         </div>
 
         <ScrollRestoration />

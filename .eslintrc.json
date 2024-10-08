@@ -23,6 +23,16 @@
     "plugin:tailwindcss/recommended"
   ],
   "rules": {
+    "tailwindcss/classnames-order": [
+      "warn",
+      {
+        "officialSorting": true
+      }
+    ],
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off"
+  },
+  "settings": {
     "react": {
       "version": "detect"
     },
@@ -33,14 +43,6 @@
     ],
     "import/resolver": {
       "typescript": {}
-    },
-    "tailwindcss/classnames-order": [
-      "warn",
-      {
-        "officialSorting": true
-      }
-    ],
-    "implicit-arrow-linebreak": "off",
-    "operator-linebreak": "off"
+    }
   }
 }

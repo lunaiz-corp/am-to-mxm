@@ -14,7 +14,7 @@ export default function Footer(
 
   return (
     <>
-      <div className="flex gap-3 font-sans text-sm font-medium text-neutral-500">
+      <div className="flex gap-3 font-sans text-sm font-medium text-neutral-500 dark:text-neutral-300">
         <a
           href="https://lunaiz.rdbl.io/8255520465/am2mxm-guide"
           target="_blank"
@@ -73,7 +73,7 @@ export default function Footer(
           © LUNAIZ Corp.
         </a> */}
 
-      <span className="font-sans text-sm font-medium text-neutral-500">
+      <span className="font-sans text-sm font-medium text-neutral-500 dark:text-neutral-300">
         © LUNAIZ Corp.
       </span>
     </>
