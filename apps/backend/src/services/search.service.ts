@@ -89,6 +89,19 @@ export class SearchService extends UnimplementedSearchService {
           cache.set(`apple:${parsedAppleUrl.id}`, result);
         }
 
+        // Filter out duplicate ISRCs
+        result = Object.values(
+          result.reduce(
+            (acc, item) => {
+              if (!acc[item.isrc] || acc[item.isrc].id > item.id) {
+                acc[item.isrc] = item;
+              }
+              return acc;
+            },
+            {} as Record<string, IAppleOptimisedResponse>,
+          ),
+        );
+
         const mxmResponses = await Promise.all(
           result.map(async (item) => {
             const cached = await cache.get<IMxmOptimisedResponse>(
