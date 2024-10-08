@@ -6,7 +6,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
 
   return (
     <div
-      className={`flex w-full items-center justify-center gap-7 rounded-xl bg-neutral-100 lg:w-[calc(100%-15px)] xl:justify-start xl:gap-11 ${
+      className={`flex w-full items-center justify-center gap-7 rounded-xl bg-neutral-100 dark:bg-neutral-700 dark:lg:bg-neutral-800 lg:w-[calc(100%-15px)] xl:justify-start xl:gap-11 ${
         location.pathname === '/source' ? 'grow' : ''
       }`}
     >
@@ -70,7 +70,9 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           {location.pathname === '/' && (
             <>
               <div>
-                <span className="truncate text-black">Album:&nbsp;</span>
+                <span className="truncate text-neutral-950 dark:text-neutral-50">
+                  Album:&nbsp;
+                </span>
                 <a
                   href={track.mxm_album_url}
                   target="_blank"
@@ -82,19 +84,21 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
               </div>
 
               <div>
-                <span className="text-black">ISRC:&nbsp;</span>
-                <span className="truncate font-medium text-black">
+                <span className="text-neutral-950 dark:text-neutral-50">
+                  ISRC:&nbsp;
+                </span>
+                <span className="truncate font-medium text-neutral-950 dark:text-neutral-50">
                   {track.isrc}
                 </span>
               </div>
 
               <div>
-                <span className="truncate text-black">
+                <span className="truncate text-neutral-950 dark:text-neutral-50">
                   Abstrack
                   <span className="hidden lg:inline">&nbsp;(Track ID)</span>
                   :&nbsp;
                 </span>
-                <span className="font-medium text-black">
+                <span className="font-medium text-neutral-950 dark:text-neutral-50">
                   {track.mxm_abstrack}
                 </span>
               </div>
@@ -104,12 +108,18 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
           {location.pathname === '/source' && (
             <>
               <div className="ml-5 mt-3">
-                <span className="text-black">Artist:&nbsp;</span>
-                <span className="font-medium text-black">{track.artist}</span>
+                <span className="text-neutral-950 dark:text-neutral-50">
+                  Artist:&nbsp;
+                </span>
+                <span className="font-medium text-neutral-950 dark:text-neutral-50">
+                  {track.artist}
+                </span>
               </div>
 
               <div className="ml-5">
-                <span className="text-black">Album:&nbsp;</span>
+                <span className="text-neutral-950 dark:text-neutral-50">
+                  Album:&nbsp;
+                </span>
                 <a
                   href={track.am_album_url}
                   target="_blank"
@@ -121,8 +131,10 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
               </div>
 
               <div className="mb-3 ml-5">
-                <span className="text-black">Abstrack (Track ID):&nbsp;</span>
-                <span className="font-medium text-black">
+                <span className="text-neutral-950 dark:text-neutral-50">
+                  Abstrack (Track ID):&nbsp;
+                </span>
+                <span className="font-medium text-neutral-950 dark:text-neutral-50">
                   {track.mxm_album_url.split('album/')[1].split('/')[1]}
                 </span>
               </div>
