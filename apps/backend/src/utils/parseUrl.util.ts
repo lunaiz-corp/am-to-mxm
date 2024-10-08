@@ -15,42 +15,53 @@ const ISRC_REGEX = /^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/;
 
 export function parseAppleUrl(url: string): IAppleMusicUrl {
   if (!ISRC_REGEX.test(url)) {
-    const urlObj = new URL(url);
-    const path = urlObj.pathname.split('/');
-    path.shift(); // remove the first empty string
+    try {
+      const urlObj = new URL(url);
+      const path = urlObj.pathname.split('/');
+      path.shift(); // remove the first empty string
 
-    // URL: https://music.apple.com/kr/album/blue-ep/1748504604
-    // id: 1748504604
-    // storefront: kr
-    // type: EAplleMusicUrlType.ALBUM
+      // URL: https://music.apple.com/kr/album/blue-ep/1748504604
+      // id: 1748504604
+      // storefront: kr
+      // type: EAplleMusicUrlType.ALBUM
 
-    if (path[0].length !== 2) {
-      // assume the country code is `us`
-      path.unshift('us');
+      if (path[0].length !== 2) {
+        // assume the country code is `us`
+        path.unshift('us');
+      }
+
+      if (
+        urlObj.hostname !== 'music.apple.com' ||
+        path.length < 4 ||
+        path.length > 5 ||
+        !STOREFRONT_REGEX.test(path[0]) ||
+        !['album', 'song'].includes(path[1]) ||
+        !/^\d+$/.test(path[path.length - 1])
+      ) {
+        throw new BadRequestError(
+          'Unsupported URL format.\n' +
+            'Working example: https://music.apple.com/kr/album/blue-ep/1748504604',
+        );
+      }
+
+      return {
+        id: path[path.length - 1],
+        storefront: path[0],
+        type: EAppleMusicUrlType[
+          path[1].toUpperCase() as keyof typeof EAppleMusicUrlType
+        ],
+        url,
+      };
+    } catch (error) {
+      if (error instanceof TypeError && error.message === 'Invalid URL') {
+        throw new BadRequestError(
+          'Invalid URL format.\n' +
+            'Working example: https://music.apple.com/kr/album/blue-ep/1748504604',
+        );
+      }
+
+      throw error;
     }
-
-    if (
-      urlObj.hostname !== 'music.apple.com' ||
-      path.length < 4 ||
-      path.length > 5 ||
-      !STOREFRONT_REGEX.test(path[0]) ||
-      !['album', 'song'].includes(path[1]) ||
-      !/^\d+$/.test(path[path.length - 1])
-    ) {
-      throw new BadRequestError(
-        'Unsupported URL format. Please check the URL again.\n' +
-          'Working example: https://music.apple.com/kr/album/blue-ep/1748504604',
-      );
-    }
-
-    return {
-      id: path[path.length - 1],
-      storefront: path[0],
-      type: EAppleMusicUrlType[
-        path[1].toUpperCase() as keyof typeof EAppleMusicUrlType
-      ],
-      url,
-    };
   } else {
     return {
       id: url, // ISRC
@@ -62,53 +73,64 @@ export function parseAppleUrl(url: string): IAppleMusicUrl {
 }
 
 export function parseMxmUrl(url: string): IMxmUrl {
-  const urlObj = new URL(url);
-  const path = urlObj.pathname.split('/');
-  path.shift(); // remove the first empty string
+  try {
+    const urlObj = new URL(url);
+    const path = urlObj.pathname.split('/');
+    path.shift(); // remove the first empty string
 
-  // URL: https://www.musixmatch.com/album/Mingturn/BLUE-EP
-  // id: Mingturn/BLUE-EP
-  // type: EMxmUrlType.ALBUM_TRACKS
+    // URL: https://www.musixmatch.com/album/Mingturn/BLUE-EP
+    // id: Mingturn/BLUE-EP
+    // type: EMxmUrlType.ALBUM_TRACKS
 
-  if (
-    urlObj.hostname !== 'www.musixmatch.com' &&
-    urlObj.hostname !== 'musixmatch.com' &&
-    urlObj.hostname !== 'com-beta.musixmatch.com'
-  ) {
-    throw new BadRequestError(
-      'Unsupported URL format. Please check the URL again.\n' +
-        'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
-    );
-  }
+    if (
+      urlObj.hostname !== 'www.musixmatch.com' &&
+      urlObj.hostname !== 'musixmatch.com' &&
+      urlObj.hostname !== 'com-beta.musixmatch.com'
+    ) {
+      throw new BadRequestError(
+        'Unsupported URL format.\n' +
+          'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
+      );
+    }
 
-  // get group by regex
-  const group = urlObj.pathname.match(MXM_PARSE_REGEX);
-  if (!group) {
-    throw new BadRequestError(
-      'Unsupported URL format. Please check the URL again.\n' +
-        'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
-    );
-  }
+    // get group by regex
+    const group = urlObj.pathname.match(MXM_PARSE_REGEX);
+    if (!group) {
+      throw new BadRequestError(
+        'Unsupported URL format.\n' +
+          'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
+      );
+    }
 
-  if (group[1]) {
+    if (group[1]) {
+      return {
+        type: EMxmUrlType.ALBUM_TRACKS,
+        vanityId: group[1],
+        url,
+      };
+    }
+
+    if (group[2]) {
+      return {
+        type: EMxmUrlType.ALBUM_TRACKS,
+        id: group[2],
+        url,
+      };
+    }
+
     return {
-      type: EMxmUrlType.ALBUM_TRACKS,
-      vanityId: group[1],
+      type: EMxmUrlType.TRACK,
+      vanityId: group[3],
       url,
     };
-  }
+  } catch (error) {
+    if (error instanceof TypeError && error.message === 'Invalid URL') {
+      throw new BadRequestError(
+        'Invalid URL format.\n' +
+          'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
+      );
+    }
 
-  if (group[2]) {
-    return {
-      type: EMxmUrlType.ALBUM_TRACKS,
-      id: group[2],
-      url,
-    };
+    throw error;
   }
-
-  return {
-    type: EMxmUrlType.TRACK,
-    vanityId: group[3],
-    url,
-  };
 }

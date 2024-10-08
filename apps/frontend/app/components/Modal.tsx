@@ -40,7 +40,7 @@ export default function Modal() {
             data.level === 'info'
               ? 'bg-blue-300'
               : data.level === 'warning'
-                ? 'bg-yellow-300'
+                ? 'bg-orange-300'
                 : 'bg-red-300'
           }`}
         >
@@ -49,7 +49,7 @@ export default function Modal() {
               data.level === 'info'
                 ? 'text-blue-600'
                 : data.level === 'warning'
-                  ? 'text-yellow-600'
+                  ? 'text-orange-500'
                   : 'text-red-600'
             }`}
           >

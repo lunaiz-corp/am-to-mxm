@@ -47,7 +47,7 @@ export function requestToMxm(data: IMxmUrl) {
     url.searchParams.set('track_isrc', data.isrc);
   } else {
     throw new BadRequestError(
-      'Unsupported URL format. Please check the URL again.\n' +
+      'Unsupported URL format.\n' +
         'Working example: https://www.musixmatch.com/album/Mingturn/BLUE-EP',
     );
   }

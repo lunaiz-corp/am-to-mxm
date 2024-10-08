@@ -57,6 +57,21 @@ export default function MainSearchArea(
           );
 
           Logger.debug('gRPC Response:', response.toObject());
+
+          if (
+            !response.toObject().tracks ||
+            response.toObject().tracks?.length === 0
+          ) {
+            setModalData({
+              level: 'warning',
+              title: 'No results found',
+              message:
+                'We could not find any results for the given query. Please try again with a different query.',
+            });
+
+            return;
+          }
+
           setSearchResult(response);
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -166,6 +181,21 @@ export default function MainSearchArea(
             );
 
             Logger.debug('gRPC Response:', response.toObject());
+
+            if (
+              !response.toObject().tracks ||
+              response.toObject().tracks?.length === 0
+            ) {
+              setModalData({
+                level: 'warning',
+                title: 'No results found',
+                message:
+                  'We could not find any results for the given query. Please try again with a different query.',
+              });
+
+              return;
+            }
+
             setSearchResult(response);
             setSearchParams({ ...searchParams, q: searchQueryString });
 
