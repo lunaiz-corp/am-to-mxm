@@ -32,7 +32,7 @@ export default function Modal() {
   return (
     <div
       ref={modalRef}
-      className="fixed left-0 top-0 flex h-dvh w-dvw items-center justify-center bg-black/60 opacity-0 transition-opacity"
+      className="fixed left-0 top-0 z-50 flex h-dvh w-dvw items-center justify-center bg-black/60 opacity-0 transition-opacity"
     >
       <div className="min-h-72 w-[500px] rounded-2xl bg-neutral-50 p-6 shadow-[0px_4px_60px_rgba(19,19,19,.08)] dark:bg-neutral-950">
         <div

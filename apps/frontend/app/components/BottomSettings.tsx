@@ -26,7 +26,7 @@ export default function BottomSettings() {
       {/* Settings toggle button */}
       <button
         type="button"
-        className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
+        className="relative flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
         title="Settings"
         onClick={() => setIsSettingsOpen((x) => !x)}
       >
@@ -48,7 +48,7 @@ export default function BottomSettings() {
           {/* Darkmode toggle */}
           <button
             type="button"
-            className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
+            className="relative z-10 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
             title={
               theme.startsWith('system')
                 ? 'Change to light mode'
@@ -82,9 +82,10 @@ export default function BottomSettings() {
           {/* Bring-Your-Own-Key */}
           <button
             type="button"
-            className="relative z-50 flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
+            className="relative flex size-16 items-center justify-center rounded-full bg-black/20 backdrop-blur-lg dark:bg-black/40"
             title="Bring-Your-Own-Key Setup (Coming soon)"
             onClick={() => {
+              setIsSettingsOpen(false);
               setModal({
                 level: 'info',
 
@@ -94,7 +95,7 @@ export default function BottomSettings() {
               });
             }}
           >
-            <KeyIcon className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 stroke-neutral-50" />
+            <KeyIcon className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 stroke-neutral-950 dark:stroke-neutral-50" />
           </button>
         </>
       )}
