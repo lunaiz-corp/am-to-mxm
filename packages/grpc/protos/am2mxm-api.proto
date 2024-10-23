@@ -1,41 +1,49 @@
-// Copyright 2015 gRPC authors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 syntax = "proto3";
-
 package lunaiz.am2mxm.api.v1;
+
+import "google/protobuf/empty.proto";
 
 // Service definition
 service Search {
-    rpc SearchByQuery(SearchQuery) returns (SearchResult) {}
+    rpc SearchMxMLink(SearchQuery) returns (SearchResult) {}
+    rpc SearchAMSource(SearchQuery) returns (SearchResult) {}
 }
 
-// Enum types definition
-enum SearchType {
-    LINK     = 0; // Apple Music -> Musixmatch by ISRC
-    SOURCE   = 1; // Musixmatch -> Apple Music by ISRC
+service Byok {
+    rpc getEncPublicKey(google.protobuf.Empty) returns (ByokEncResult) {}
+    rpc checkMxMKeyValidity(ByokQuery) returns (ByokResult) {}
+    rpc checkAMKeyValidity(ByokQuery) returns (ByokResult) {}
 }
 
 // Message types definition
 message SearchQuery {
-    SearchType type = 1; // Determines the search type
-    string query    = 2; // Could be Apple Music Track ID, link, ISRC or Abstrack.
+    string query             = 1; // Could be Apple Music Track ID, link, ISRC or Abstrack.
+    string byok_session      = 2; // Session key that 1:1 matches RSA Key pair.
+    string mxm_byok_key      = 3; // RSA Encrypted BYOK (Bring-Your-Own-Key) for MxM. Could be null.
+    string am_byok_teamid    = 4; // Apple API Team ID for Apple Music BYOK. Could be null.
+    string am_byok_keyid     = 5; // Apple API Key ID for Apple Music BYOK. Could be null.
+    string am_byok_key       = 6; // RSA Encrypted BYOK (Bring-Your-Own-Key) for Apple Music. Could be null.
 }
 
 message SearchResult {
-    SearchType type           = 1; // Determines the search type (returned for validation)
-    repeated TrackInfo tracks = 2; // List of tracks
+    repeated TrackInfo tracks = 1; // List of tracks
+}
+
+message ByokEncResult {
+    string session_key = 1; // Session key that 1:1 matches RSA Key pair.
+    ByokEncJwk public_key = 2; // JWK-typed Public key for BYOK (Bring-Your-Own-Key) encryption.
+}
+
+message ByokQuery {
+    string session_key       = 1; // Session key that 1:1 matches RSA Key pair.
+    string mxm_byok_key      = 2; // RSA Encrypted BYOK (Bring-Your-Own-Key) for MxM. Could be null.
+    string am_byok_teamid    = 3; // Apple API Team ID for Apple Music BYOK. Could be null.
+    string am_byok_keyid     = 4; // Apple API Key ID for Apple Music BYOK. Could be null.
+    string am_byok_key       = 5; // RSA Encrypted BYOK (Bring-Your-Own-Key) for Apple Music. Could be null.
+}
+
+message ByokResult {
+    bool valid = 1; // BYOK key is valid or not.
 }
 
 message TrackInfo {
@@ -46,12 +54,20 @@ message TrackInfo {
 
     int32  mxm_abstrack  = 4; // Musixmatch's abstrack. Could be null, if Musixmatch doesn't have this track.
     string mxm_track_url = 5; // Musixmatch's track URL. Could be null, if Musixmatch doesn't have this track.
-    string mxm_thumbnail = 6; // Musixmatch's thumbnail URL. Could be null, if Musixmatch doesn't have this track.
 
-    string mxm_album     = 7; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.
-    string mxm_album_url = 8; // Musixmatch's album URL. Could be null, if Musixmatch doesn't have this track.
+    string mxm_album     = 6; // Musixmatch's album name. Could be null, if Musixmatch doesn't have this track.
+    string mxm_album_url = 7; // Musixmatch's album URL. Could be null, if Musixmatch doesn't have this track.
 
-    string am_track_url  = 9; // Apple Music's track URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
-    string am_album_url  = 10; // Apple Music's album URL. Could be null, if Apple Music doesn't have this track. (Only for SearchType.SOURCE or ABSTRACK)
-    string am_thumbnail  = 11; // Apple Music's thumbnail URL. Could be null, if Apple Music doesn't have this track.
+    string am_track_url  = 8; // Apple Music's track URL. Could be null, if Apple Music doesn't have this track.
+    string am_album_url  = 9; // Apple Music's album URL. Could be null, if Apple Music doesn't have this track.
+    string am_thumbnail  = 10; // Apple Music's thumbnail URL. Could be null, if Apple Music doesn't have this track.
+}
+
+message ByokEncJwk {
+    string kty              = 1;
+    string alg              = 2;
+    string n                = 3;
+    string e                = 4;
+    bool ext                = 5;
+    repeated string key_ops = 6;
 }

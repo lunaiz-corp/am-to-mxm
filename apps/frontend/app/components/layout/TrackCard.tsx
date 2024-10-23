@@ -19,7 +19,7 @@ export default function TrackCard({ track }: { track: TrackInfo }) {
         >
           <img
             className="size-full rounded-xl"
-            src={track.am_thumbnail || track.mxm_thumbnail}
+            src={track.am_thumbnail}
             alt={`${track.artist}-${track.title} Thumbnail`}
           />
         </a>

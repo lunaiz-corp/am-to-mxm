@@ -1,8 +1,8 @@
+import { Knex } from 'knex';
 import * as jose from 'jose';
-import cache from './cache.util';
 
 // eslint-disable-next-line import/prefer-default-export
-export async function getAppleDeveloperToken() {
+export async function getAppleDeveloperToken(knex: Knex) {
   const { APPLE_MUSIC_PRIVATE_KEY, APPLE_MUSIC_KEY_ID, APPLE_MUSIC_TEAM_ID } =
     process.env;
 
@@ -18,8 +18,20 @@ export async function getAppleDeveloperToken() {
     throw new Error('Team ID is not defined');
   }
 
-  const cachedToken = await cache.get('appleMusicToken');
-  if (cachedToken) return cachedToken;
+  // const cachedToken = await cache.get('appleMusicToken');
+  const cachedToken = await knex('am-token-cache').first();
+  if (cachedToken) {
+    // check if token is still valid (expires in 7 days)
+    if (
+      new Date(cachedToken.cached_at).getTime() + 1000 * 60 * 60 * 24 * 7 >
+      Date.now()
+    ) {
+      return cachedToken.token;
+    }
+
+    // token is expired, delete it
+    await knex('am-token-cache').delete();
+  }
 
   const privateKey = await jose.importPKCS8(
     // eslint-disable-next-line prefer-template
@@ -39,7 +51,10 @@ export async function getAppleDeveloperToken() {
     .setExpirationTime('7d')
     .sign(privateKey);
 
-  await cache.set('appleMusicToken', token, 60 * 60 * 24 * 7);
+  knex('am-token-cache').insert({
+    token,
+    cached_at: new Date(),
+  });
 
   return token;
 }

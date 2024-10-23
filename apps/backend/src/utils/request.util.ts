@@ -1,3 +1,4 @@
+import type { Knex } from 'knex';
 import { BadRequestError } from '../exceptions/BadRequest.exception';
 
 import { IAppleMusicUrl } from '../types/appleUrl.type';
@@ -5,7 +6,11 @@ import { EMxmUrlType, IMxmUrl } from '../types/mxmUrl.type';
 
 import { getAppleDeveloperToken } from './appleToken.util';
 
-export async function requestToApple(data: IAppleMusicUrl) {
+export async function requestToApple(
+  data: IAppleMusicUrl,
+  knex: Knex,
+  byokKey?: string,
+) {
   let url = `https://api.music.apple.com/v1/catalog/${data.storefront}/${data.type}`;
 
   if (data.url === 'ISRC') {
@@ -16,18 +21,18 @@ export async function requestToApple(data: IAppleMusicUrl) {
 
   return fetch(url, {
     headers: {
-      Authorization: `Bearer ${await getAppleDeveloperToken()}`,
+      Authorization: `Bearer ${byokKey || (await getAppleDeveloperToken(knex))}`,
     },
   });
 }
 
-export function requestToMxm(data: IMxmUrl) {
+export function requestToMxm(data: IMxmUrl, byokKey?: string) {
   if (!process.env.MUSIXMATCH_API_KEY) {
     throw new Error('Musixmatch API key is not provided.');
   }
 
   const url = new URL(`https://api.musixmatch.com/ws/1.1/${data.type}.get`);
-  url.searchParams.set('apikey', process.env.MUSIXMATCH_API_KEY);
+  url.searchParams.set('apikey', byokKey || process.env.MUSIXMATCH_API_KEY);
 
   if (
     data.id &&

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   AdjustmentsHorizontalIcon,
@@ -9,9 +9,16 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 
+import {
+  ByokQuery,
+  ByokClient as ByokServiceClient,
+} from '@packages/grpc/__generated__/am2mxm-api';
+import { Empty } from '@packages/grpc/__generated__/google/protobuf/empty';
+
 import { toggleTheme } from '~/utils/theme';
-import { useThemeStore } from '~/stores/theme';
-import { useModalDataStore } from '~/stores/modal';
+import { encodeRsa } from '~/utils/byokRsaEncrypt';
+import { useThemeStore } from '~/stores/layout/theme';
+import { useModalDataStore } from '~/stores/layout/modal';
 
 export default function BottomSettings() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -20,6 +27,16 @@ export default function BottomSettings() {
   const setTheme = useThemeStore((state) => state.setTheme);
 
   const setModal = useModalDataStore((state) => state.setData);
+
+  const [mxmByokKey, setMxmByokKey] = useState<string | null>(null);
+  const [amByokTeamId, setAmByokTeamId] = useState<string | null>(null);
+  const [amByokMusicKitId, setAmByokMusicKitId] = useState<string | null>(null);
+  const [amByokKey, setAmByokKey] = useState<string | null>(null);
+
+  const client = useMemo(
+    () => new ByokServiceClient(import.meta.env.VITE_API_URL),
+    [],
+  );
 
   return (
     <div className="absolute bottom-8 right-6 flex flex-col-reverse gap-4">
@@ -86,12 +103,55 @@ export default function BottomSettings() {
             title="Bring-Your-Own-Key Setup (Coming soon)"
             onClick={() => {
               setIsSettingsOpen(false);
+              // setModal({
+              //   level: 'info',
+              //   type: 'alert',
+
+              //   title: 'Not available yet',
+              //   message:
+              //     'This feature is still under development. Please check back later.',
+              // });
+
               setModal({
                 level: 'info',
+                type: 'prompt',
 
-                title: 'Not available yet',
+                title: 'Set your own API key',
                 message:
-                  'This feature is still under development. Please check back later.',
+                  'You can set up your own API key to reduce rate limiting errors.\nYour key is encrypted and stored in your browser, not on a server or DB.\n[👉 How can I get my own API Key?](https://lunaiz.rdbl.io/8255520465/am2mxm-guide#how-can-i-get-my-own-api-key%3F)',
+
+                promptInput: [
+                  {
+                    type: 'password',
+                    placeholder: 'Enter your Musixmatch API Key',
+                    value: [mxmByokKey, setMxmByokKey],
+                  },
+                  {
+                    type: 'divider',
+                    value: [null, () => null],
+                  },
+                  {
+                    type: 'text',
+                    placeholder: 'Enter your Apple Team ID',
+                    value: [amByokTeamId, setAmByokTeamId],
+                  },
+                  {
+                    type: 'text',
+                    placeholder: 'Enter your Apple MusicKit Key ID',
+                    value: [amByokMusicKitId, setAmByokMusicKitId],
+                  },
+                  {
+                    type: 'file',
+                    placeholder: 'Apple MusicKit Key (.p8)',
+                    value: [amByokKey, setAmByokKey],
+                  },
+                ],
+
+                onConfirm: async () => {
+                  // TODO: Work out the algorithm for check the key is valid and set on the localStorage / cookie
+                  const encodedMxmKey = await encodeRsa(mxmByokKey!);
+                  console.log(encodedMxmKey);
+                },
               });
             }}
           >

@@ -1,5 +1,8 @@
 import type { IAppleOptimisedResponse } from '../types/appleOptimisedResponse.type';
-import { IMxmOptimisedResponse } from '../types/mxmOptimisedResponse.type';
+import {
+  IMxmAlbumOptimisedResponse,
+  IMxmTrackOptimisedResponse,
+} from '../types/mxmOptimisedResponse.type';
 
 export function parseResponseFromApple(
   data: AppleMusicApi.Album[] | AppleMusicApi.Song[],
@@ -55,37 +58,61 @@ export function parseResponseFromApple(
   });
 }
 
-export function parseResponseFromMxm(
+function extractMxmVanityIdFromUrl(url: string): string | null {
+  const splitedUrl = url.match(/musixmatch\.com\/[^/]+\/([^/]+\/[^?/]+)/);
+  return splitedUrl ? splitedUrl[1] : null;
+}
+
+export function parseTrackResponseFromMxm(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
   isrc?: string,
-): IMxmOptimisedResponse {
+): IMxmTrackOptimisedResponse {
   if (data.track) {
+    const vanityIdInferenced = extractMxmVanityIdFromUrl(
+      data.track.track_share_url,
+    );
+
     return {
       abstrack: data.track.commontrack_id,
       isrc: data.track.track_isrc || isrc,
       name: data.track.track_name,
 
       url: data.track.track_share_url,
-      vanityId: data.track.commontrack_vanity_id,
-
-      artwork: {
-        url: {
-          '100x100': data.track.album_coverart_100x100,
-          '350x350': data.track.album_coverart_350x350,
-          '500x500': data.track.album_coverart_500x500,
-          '800x800': data.track.album_coverart_800x800,
-        },
-      },
+      vanityId: data.track.commontrack_vanity_id || vanityIdInferenced,
 
       album: {
         id: data.track.album_id,
         name: data.track.album_name,
-        vanityId: data.track.album_vanity_id,
       },
       artist: {
         id: data.track.artist_id,
         name: data.track.artist_name,
+      },
+    };
+  }
+
+  throw new Error('Unexpected response from Musixmatch API.');
+}
+
+export function parseAlbumResponseFromMxm(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any,
+): IMxmAlbumOptimisedResponse {
+  if (data.album) {
+    return {
+      id: data.album.album_id,
+      name: data.album.album_name,
+
+      url: `https://www.musixmatch.com/album/${data.album.artist_id}/${data.album.album_id}`,
+
+      artist: {
+        id: data.album.artist_id.toString(),
+        name: data.album.artist_name,
+      },
+
+      externalIds: {
+        itunes: data.album.external_ids.itunes[0],
       },
     };
   }

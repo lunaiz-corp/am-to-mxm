@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
+import typographyPlugin from '@tailwindcss/typography';
 
 export default {
   content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
@@ -20,6 +21,6 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [typographyPlugin],
   darkMode: 'class',
 } satisfies Config;

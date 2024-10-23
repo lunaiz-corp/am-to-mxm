@@ -1,13 +1,11 @@
 import { Link } from '@remix-run/react';
 
-import { SearchType } from '@packages/grpc/__generated__/am2mxm-api';
-
-import { ISearchTypeProps } from '~/types/search';
-import { useSearchResultStore } from '~/stores/searchResult';
-import { useSearchQueryStore } from '~/stores/searchQuery';
+import { ESearchType, type ISearchTypeProps } from '~/types/search';
+import { useSearchResultStore } from '~/stores/function/searchResult';
+import { useSearchQueryStore } from '~/stores/function/searchQuery';
 
 export default function Footer(
-  props: ISearchTypeProps = { searchType: SearchType.LINK },
+  props: ISearchTypeProps = { searchType: ESearchType.LINK },
 ) {
   const setSearchResult = useSearchResultStore((state) => state.setResult);
   const setSearchQueryString = useSearchQueryStore((state) => state.setQuery);
@@ -23,7 +21,7 @@ export default function Footer(
         >
           How to use?
         </a>
-        {props.searchType !== SearchType.LINK && (
+        {props.searchType !== ESearchType.LINK && (
           <>
             <span>|</span>
             <Link
@@ -38,7 +36,7 @@ export default function Footer(
             </Link>
           </>
         )}
-        {props.searchType !== SearchType.SOURCE && (
+        {props.searchType !== ESearchType.SOURCE && (
           <>
             <span>|</span>
             <Link

@@ -1,10 +1,13 @@
-import { SearchType } from '@packages/grpc/__generated__/am2mxm-api';
+export enum ESearchType {
+  LINK,
+  SOURCE,
+}
 
 export interface ISearchTypeProps {
-  searchType: SearchType;
+  searchType: ESearchType;
 }
 
 export const routes = {
-  '/': SearchType.LINK,
-  '/source': SearchType.SOURCE,
+  '/': ESearchType.LINK,
+  '/source': ESearchType.SOURCE,
 };

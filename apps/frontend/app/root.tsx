@@ -13,21 +13,32 @@ import { ManifestLink } from '@remix-pwa/sw';
 import 'normalize.css';
 import '~/styles/tailwind.css';
 
-import MainSearchArea from '~/components/MainSearchArea';
-import Footer from '~/components/Footer';
-import Modal from '~/components/Modal';
-import BottomSettings from '~/components/BottomSettings';
+import Modal from '~/components/common/Modal';
+import BottomSettings from '~/components/common/BottomSettings';
+import ProgressIndicator from '~/components/common/ProgressIndicator';
+
+import MainSearchArea from '~/components/layout/MainSearchArea';
+import Footer from '~/components/layout/Footer';
 
 import { routes } from '~/types/search';
 
 import { initTheme } from '~/utils/theme';
-import { useThemeStore } from '~/stores/theme';
+import { useThemeStore } from '~/stores/layout/theme';
+import { useProgressStore } from './stores/layout/progress';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   const theme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
+
+  const progress = useProgressStore((state) => state.progress);
+  const progressIndeterminate = useProgressStore(
+    (state) => state.indeterminate,
+  );
+  const progressIndicatorNeeded = useProgressStore(
+    (state) => state.indicatorNeeded,
+  );
 
   useEffect(() => {
     initTheme(theme, setTheme);
@@ -117,6 +128,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* End Google Tag Manager (noscript) */}
 
         <div className="bg-neutral-50 dark:bg-neutral-800 dark:lg:bg-neutral-950">
+          {progressIndicatorNeeded && (
+            <ProgressIndicator
+              indeterminate={progressIndeterminate}
+              progress={progress}
+            />
+          )}
+
           <main className="flex flex-col lg:min-h-screen lg:flex-row">
             {Object.keys(routes).includes(location.pathname) && (
               <MainSearchArea

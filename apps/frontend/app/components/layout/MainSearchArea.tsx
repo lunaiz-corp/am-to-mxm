@@ -2,19 +2,21 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Form, useSearchParams } from '@remix-run/react';
 
 import {
-  SearchType,
   SearchQuery,
   SearchClient as SearchServiceClient,
 } from '@packages/grpc/__generated__/am2mxm-api';
 
-import { ISearchTypeProps } from '~/types/search';
-import { useSearchResultStore } from '~/stores/searchResult';
-import { useSearchQueryStore } from '~/stores/searchQuery';
-import { useModalDataStore } from '~/stores/modal';
+import { ESearchType, type ISearchTypeProps } from '~/types/search';
+
+import { useModalDataStore } from '~/stores/layout/modal';
+import { useProgressStore } from '~/stores/layout/progress';
+
+import { useSearchResultStore } from '~/stores/function/searchResult';
+import { useSearchQueryStore } from '~/stores/function/searchQuery';
 
 import { Logger } from '~/utils/logger';
 
-import Footer from '~/components/Footer';
+import Footer from '~/components/layout/Footer';
 
 import AmLogo from '~/assets/images/am.svg?react';
 import MxmAppLogo from '~/assets/images/mxm.webp';
@@ -23,7 +25,7 @@ import AmTypography from '~/assets/images/am_typography.svg?react';
 import MxmTypography from '~/assets/images/mxm_typography.svg?react';
 
 export default function MainSearchArea(
-  props: ISearchTypeProps = { searchType: SearchType.LINK },
+  props: ISearchTypeProps = { searchType: ESearchType.LINK },
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -32,7 +34,7 @@ export default function MainSearchArea(
     [],
   );
 
-  const isLoaded = useRef(false);
+  const isFirstRendered = useRef(false);
   const setSearchResult = useSearchResultStore((state) => state.setResult);
 
   const searchQueryString = useSearchQueryStore((state) => state.query);
@@ -40,20 +42,36 @@ export default function MainSearchArea(
 
   const setModalData = useModalDataStore((state) => state.setData);
 
+  const setProgress = useProgressStore((state) => state.setProgress);
+  const setProgressIndeterminate = useProgressStore(
+    (state) => state.setIndeterminate,
+  );
+  const setProgressIndicatorNeeded = useProgressStore(
+    (state) => state.setIndicatorNeeded,
+  );
+  const progressDeferTimeout = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     (async () => {
-      if (searchParams.get('q') && !isLoaded.current) {
+      if (searchParams.get('q') && !isFirstRendered.current) {
+        progressDeferTimeout.current = setTimeout(() => {
+          setProgress(1);
+          setProgressIndeterminate(true);
+          setProgressIndicatorNeeded(true);
+        }, 200);
+
         setSearchQueryString(searchParams.get('q')!);
-        isLoaded.current = true;
+        isFirstRendered.current = true;
 
         try {
-          const response = await client.SearchByQuery(
-            new SearchQuery({
-              type: props.searchType,
-              query: searchParams.get('q')!,
-            }),
-            null,
-          );
+          const searchQuery = new SearchQuery({
+            query: searchParams.get('q')!,
+          });
+
+          const response =
+            props.searchType === ESearchType.SOURCE
+              ? await client.SearchAMSource(searchQuery, null)
+              : await client.SearchMxMLink(searchQuery, null);
 
           Logger.debug('gRPC Response:', response.toObject());
 
@@ -63,6 +81,8 @@ export default function MainSearchArea(
           ) {
             setModalData({
               level: 'warning',
+              type: 'alert',
+
               title: 'No results found',
               message:
                 'We could not find any results for the given query. Please try again with a different query.',
@@ -80,6 +100,8 @@ export default function MainSearchArea(
 
           setModalData({
             level: 'error',
+            type: 'alert',
+
             title:
               (hasNewLine && message.split('\n')[0]) ||
               'Whoopsie, we ran into an error...',
@@ -91,6 +113,13 @@ export default function MainSearchArea(
           });
 
           throw error;
+        } finally {
+          clearTimeout(progressDeferTimeout.current!);
+          progressDeferTimeout.current = null;
+
+          setProgress(1);
+          setProgressIndeterminate(false);
+          setProgressIndicatorNeeded(false);
         }
       }
     })();
@@ -99,7 +128,7 @@ export default function MainSearchArea(
   return (
     <div className="flex flex-col items-center px-8 pb-14 pt-20 lg:block lg:h-screen lg:max-w-[448px] lg:bg-neutral-100 lg:px-16 lg:pb-0 lg:pt-[158px] dark:lg:bg-neutral-800">
       <div className="flex items-center gap-4">
-        {props.searchType === SearchType.LINK ? (
+        {props.searchType === ESearchType.LINK ? (
           <>
             <AmLogo
               className="size-[50px] rounded-[10px]"
@@ -145,7 +174,7 @@ export default function MainSearchArea(
       </div>
 
       <div className="flex items-center gap-3 pt-8">
-        {props.searchType === SearchType.LINK ? (
+        {props.searchType === ESearchType.LINK ? (
           <>
             <AmTypography className="h-7 fill-neutral-950 dark:fill-neutral-50" />
             <span className="mt-[2px] font-sans text-[28px] font-medium text-neutral-950 dark:text-neutral-50">
@@ -170,14 +199,21 @@ export default function MainSearchArea(
           e.preventDefault();
           if (!searchQueryString) return;
 
+          progressDeferTimeout.current = setTimeout(() => {
+            setProgress(1);
+            setProgressIndeterminate(true);
+            setProgressIndicatorNeeded(true);
+          }, 200);
+
           try {
-            const response = await client.SearchByQuery(
-              new SearchQuery({
-                type: props.searchType,
-                query: searchQueryString,
-              }),
-              null,
-            );
+            const searchQuery = new SearchQuery({
+              query: searchQueryString,
+            });
+
+            const response =
+              props.searchType === ESearchType.SOURCE
+                ? await client.SearchAMSource(searchQuery, null)
+                : await client.SearchMxMLink(searchQuery, null);
 
             Logger.debug('gRPC Response:', response.toObject());
 
@@ -187,6 +223,8 @@ export default function MainSearchArea(
             ) {
               setModalData({
                 level: 'warning',
+                type: 'alert',
+
                 title: 'No results found',
                 message:
                   'We could not find any results for the given query. Please try again with a different query.',
@@ -205,6 +243,8 @@ export default function MainSearchArea(
 
             setModalData({
               level: 'error',
+              type: 'alert',
+
               title:
                 (hasNewLine && message.split('\n')[0]) ||
                 'Whoopsie, we ran into an error...',
@@ -216,6 +256,13 @@ export default function MainSearchArea(
             });
 
             throw error;
+          } finally {
+            clearTimeout(progressDeferTimeout.current!);
+            progressDeferTimeout.current = null;
+
+            setProgress(1);
+            setProgressIndeterminate(false);
+            setProgressIndicatorNeeded(false);
           }
         }}
       >
@@ -231,7 +278,7 @@ export default function MainSearchArea(
           className="absolute left-1 top-[25.5px] font-sans text-base text-neutral-400 transition-all duration-500 ease-in-out peer-valid:top-0 peer-valid:text-sm peer-valid:text-neutral-800 peer-focus:top-0 peer-focus:text-sm peer-focus:text-neutral-800 dark:peer-valid:text-neutral-200 dark:peer-focus:text-neutral-200"
           htmlFor="link-input"
         >
-          {props.searchType === SearchType.LINK
+          {props.searchType === ESearchType.LINK
             ? 'Apple Music Track/Album link or ISRC'
             : 'Musixmatch Track/Album link'}
         </label>

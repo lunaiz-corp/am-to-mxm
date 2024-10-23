@@ -1,13 +1,13 @@
 import type { MetaFunction } from '@remix-run/node';
 
-import TrackCard from '~/components/TrackCard';
-import { useSearchResultStore } from '~/stores/searchResult';
+import TrackCard from '~/components/layout/TrackCard';
+import { useSearchResultStore } from '~/stores/function/searchResult';
 
 export const meta: MetaFunction = () => [
   { title: 'Musixmatch to Apple Music Source' },
   {
     name: 'description',
-    content: 'Get Apple Music Source/Album Link from Musixmatch Link/Abstract',
+    content: 'Get Apple Music Source/Album Link from Musixmatch Link/Abstrack',
   },
 ];
 

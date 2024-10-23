@@ -23,6 +23,8 @@
     "plugin:tailwindcss/recommended"
   ],
   "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off",
     "tailwindcss/classnames-order": [
       "warn",
       {
@@ -30,7 +32,8 @@
       }
     ],
     "implicit-arrow-linebreak": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "no-nested-ternary": "off"
   },
   "settings": {
     "react": {
