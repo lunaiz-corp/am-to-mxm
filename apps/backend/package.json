@@ -23,7 +23,7 @@
     "tslog": "^4.9.3"
   },
   "devDependencies": {
-    "@types/node": "22.7.4",
+    "@types/node": "22.7.9",
     "tsx": "^4.19.1",
     "typescript": "^5.4.3"
   }
