@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   AdjustmentsHorizontalIcon,
@@ -17,6 +17,8 @@ import { Empty } from '@packages/grpc/__generated__/google/protobuf/empty';
 
 import { toggleTheme } from '~/utils/theme';
 import { encodeRsa } from '~/utils/byokRsaEncrypt';
+import { isNilOrBlank } from '~/utils/es-toolkit-inspired/isNilOrBlank';
+
 import { useThemeStore } from '~/stores/layout/theme';
 import { useModalDataStore } from '~/stores/layout/modal';
 
@@ -37,6 +39,13 @@ export default function BottomSettings() {
     () => new ByokServiceClient(import.meta.env.VITE_API_URL),
     [],
   );
+
+  useEffect(() => {
+    setMxmByokKey(localStorage.getItem('mxm_key'));
+    setAmByokTeamId(localStorage.getItem('am_teamid'));
+    setAmByokMusicKitId(localStorage.getItem('am_keyid'));
+    setAmByokKey(localStorage.getItem('am_private_key'));
+  }, []);
 
   return (
     <div className="absolute bottom-8 right-6 flex flex-col-reverse gap-4">
@@ -147,10 +156,65 @@ export default function BottomSettings() {
                   },
                 ],
 
+                // TODO: Why key variable is not updated? (it updates once the modal is closed... Why?)
                 onConfirm: async () => {
-                  // TODO: Work out the algorithm for check the key is valid and set on the localStorage / cookie
-                  const encodedMxmKey = await encodeRsa(mxmByokKey!);
-                  console.log(encodedMxmKey);
+                  const publicKey = await client.getEncPublicKey(
+                    new Empty({}),
+                    null,
+                  );
+
+                  const encodedMxmKey =
+                    mxmByokKey && !isNilOrBlank(mxmByokKey)
+                      ? await encodeRsa(publicKey, mxmByokKey)
+                      : undefined;
+
+                  const encodedAmTeamId =
+                    amByokTeamId && !isNilOrBlank(amByokTeamId)
+                      ? await encodeRsa(publicKey, amByokTeamId)
+                      : undefined;
+
+                  const encodedAmKeyId =
+                    amByokMusicKitId && !isNilOrBlank(amByokMusicKitId)
+                      ? await encodeRsa(publicKey, amByokMusicKitId)
+                      : undefined;
+
+                  const encodedAmKey =
+                    amByokKey && !isNilOrBlank(amByokKey)
+                      ? await encodeRsa(publicKey, amByokKey)
+                      : undefined;
+
+                  const mxmKeyValidity = encodedMxmKey
+                    ? await client.checkMxMKeyValidity(
+                        new ByokQuery({
+                          session_key: encodedMxmKey.sessionKey,
+                          mxm_key: encodedMxmKey.encrypted,
+                        }),
+                        null,
+                      )
+                    : undefined;
+
+                  const amKeyValidity =
+                    encodedAmTeamId && encodedAmKeyId && encodedAmKey
+                      ? await client.checkAMKeyValidity(
+                          new ByokQuery({
+                            session_key: encodedAmKey.sessionKey,
+                            am_teamid: encodedAmTeamId.encrypted,
+                            am_keyid: encodedAmKeyId.encrypted,
+                            am_secret_key: encodedAmKey.encrypted,
+                          }),
+                          null,
+                        )
+                      : undefined;
+
+                  if (mxmKeyValidity && mxmKeyValidity.valid) {
+                    localStorage.setItem('mxm_key', mxmByokKey!);
+                  }
+
+                  if (amKeyValidity && amKeyValidity.valid) {
+                    localStorage.setItem('am_teamid', amByokTeamId!);
+                    localStorage.setItem('am_keyid', amByokMusicKitId!);
+                    localStorage.setItem('am_private_key', amByokKey!);
+                  }
                 },
               });
             }}

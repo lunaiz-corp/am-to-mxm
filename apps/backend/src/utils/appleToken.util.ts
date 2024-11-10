@@ -2,7 +2,33 @@ import { Knex } from 'knex';
 import * as jose from 'jose';
 
 // eslint-disable-next-line import/prefer-default-export
-export async function getAppleDeveloperToken(knex: Knex) {
+export async function getAppleDeveloperToken(
+  teamId: string,
+  keyId: string,
+  privateKey: string,
+) {
+  const pkcs8PrivateKey = await jose.importPKCS8(
+    // eslint-disable-next-line prefer-template
+    '-----BEGIN PRIVATE KEY-----\n' +
+      Buffer.from(privateKey, 'base64').toString('utf-8') +
+      '\n-----END PRIVATE KEY-----',
+    'ES256',
+  );
+
+  const token = await new jose.SignJWT()
+    .setProtectedHeader({
+      alg: 'ES256',
+      kid: keyId,
+    })
+    .setIssuer(teamId)
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(pkcs8PrivateKey);
+
+  return token;
+}
+
+export async function getDefaultAppleDeveloperToken(knex: Knex) {
   const { APPLE_MUSIC_PRIVATE_KEY, APPLE_MUSIC_KEY_ID, APPLE_MUSIC_TEAM_ID } =
     process.env;
 
@@ -33,23 +59,11 @@ export async function getAppleDeveloperToken(knex: Knex) {
     await knex('am-token-cache').delete();
   }
 
-  const privateKey = await jose.importPKCS8(
-    // eslint-disable-next-line prefer-template
-    '-----BEGIN PRIVATE KEY-----\n' +
-      Buffer.from(APPLE_MUSIC_PRIVATE_KEY, 'base64').toString('utf-8') +
-      '\n-----END PRIVATE KEY-----',
-    'ES256',
+  const token = await getAppleDeveloperToken(
+    APPLE_MUSIC_TEAM_ID,
+    APPLE_MUSIC_KEY_ID,
+    APPLE_MUSIC_PRIVATE_KEY,
   );
-
-  const token = await new jose.SignJWT()
-    .setProtectedHeader({
-      alg: 'ES256',
-      kid: process.env.APPLE_MUSIC_KEY_ID,
-    })
-    .setIssuer(APPLE_MUSIC_TEAM_ID)
-    .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(privateKey);
 
   knex('am-token-cache').insert({
     token,

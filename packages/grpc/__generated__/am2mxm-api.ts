@@ -11,11 +11,7 @@ export class SearchQuery extends pb_1.Message {
     #one_of_decls: number[][] = [];
     constructor(data?: any[] | {
         query?: string;
-        byok_session?: string;
-        mxm_byok_key?: string;
-        am_byok_teamid?: string;
-        am_byok_keyid?: string;
-        am_byok_key?: string;
+        byok?: ByokQuery;
     }) {
         super();
         pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -23,20 +19,8 @@ export class SearchQuery extends pb_1.Message {
             if ("query" in data && data.query != undefined) {
                 this.query = data.query;
             }
-            if ("byok_session" in data && data.byok_session != undefined) {
-                this.byok_session = data.byok_session;
-            }
-            if ("mxm_byok_key" in data && data.mxm_byok_key != undefined) {
-                this.mxm_byok_key = data.mxm_byok_key;
-            }
-            if ("am_byok_teamid" in data && data.am_byok_teamid != undefined) {
-                this.am_byok_teamid = data.am_byok_teamid;
-            }
-            if ("am_byok_keyid" in data && data.am_byok_keyid != undefined) {
-                this.am_byok_keyid = data.am_byok_keyid;
-            }
-            if ("am_byok_key" in data && data.am_byok_key != undefined) {
-                this.am_byok_key = data.am_byok_key;
+            if ("byok" in data && data.byok != undefined) {
+                this.byok = data.byok;
             }
         }
     }
@@ -46,91 +30,38 @@ export class SearchQuery extends pb_1.Message {
     set query(value: string) {
         pb_1.Message.setField(this, 1, value);
     }
-    get byok_session() {
-        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+    get byok() {
+        return pb_1.Message.getWrapperField(this, ByokQuery, 2) as ByokQuery;
     }
-    set byok_session(value: string) {
-        pb_1.Message.setField(this, 2, value);
+    set byok(value: ByokQuery) {
+        pb_1.Message.setWrapperField(this, 2, value);
     }
-    get mxm_byok_key() {
-        return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-    }
-    set mxm_byok_key(value: string) {
-        pb_1.Message.setField(this, 3, value);
-    }
-    get am_byok_teamid() {
-        return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-    }
-    set am_byok_teamid(value: string) {
-        pb_1.Message.setField(this, 4, value);
-    }
-    get am_byok_keyid() {
-        return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-    }
-    set am_byok_keyid(value: string) {
-        pb_1.Message.setField(this, 5, value);
-    }
-    get am_byok_key() {
-        return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
-    }
-    set am_byok_key(value: string) {
-        pb_1.Message.setField(this, 6, value);
+    get has_byok() {
+        return pb_1.Message.getField(this, 2) != null;
     }
     static fromObject(data: {
         query?: string;
-        byok_session?: string;
-        mxm_byok_key?: string;
-        am_byok_teamid?: string;
-        am_byok_keyid?: string;
-        am_byok_key?: string;
+        byok?: ReturnType<typeof ByokQuery.prototype.toObject>;
     }): SearchQuery {
         const message = new SearchQuery({});
         if (data.query != null) {
             message.query = data.query;
         }
-        if (data.byok_session != null) {
-            message.byok_session = data.byok_session;
-        }
-        if (data.mxm_byok_key != null) {
-            message.mxm_byok_key = data.mxm_byok_key;
-        }
-        if (data.am_byok_teamid != null) {
-            message.am_byok_teamid = data.am_byok_teamid;
-        }
-        if (data.am_byok_keyid != null) {
-            message.am_byok_keyid = data.am_byok_keyid;
-        }
-        if (data.am_byok_key != null) {
-            message.am_byok_key = data.am_byok_key;
+        if (data.byok != null) {
+            message.byok = ByokQuery.fromObject(data.byok);
         }
         return message;
     }
     toObject() {
         const data: {
             query?: string;
-            byok_session?: string;
-            mxm_byok_key?: string;
-            am_byok_teamid?: string;
-            am_byok_keyid?: string;
-            am_byok_key?: string;
+            byok?: ReturnType<typeof ByokQuery.prototype.toObject>;
         } = {};
         if (this.query != null) {
             data.query = this.query;
         }
-        if (this.byok_session != null) {
-            data.byok_session = this.byok_session;
-        }
-        if (this.mxm_byok_key != null) {
-            data.mxm_byok_key = this.mxm_byok_key;
-        }
-        if (this.am_byok_teamid != null) {
-            data.am_byok_teamid = this.am_byok_teamid;
-        }
-        if (this.am_byok_keyid != null) {
-            data.am_byok_keyid = this.am_byok_keyid;
-        }
-        if (this.am_byok_key != null) {
-            data.am_byok_key = this.am_byok_key;
+        if (this.byok != null) {
+            data.byok = this.byok.toObject();
         }
         return data;
     }
@@ -140,16 +71,8 @@ export class SearchQuery extends pb_1.Message {
         const writer = w || new pb_1.BinaryWriter();
         if (this.query.length)
             writer.writeString(1, this.query);
-        if (this.byok_session.length)
-            writer.writeString(2, this.byok_session);
-        if (this.mxm_byok_key.length)
-            writer.writeString(3, this.mxm_byok_key);
-        if (this.am_byok_teamid.length)
-            writer.writeString(4, this.am_byok_teamid);
-        if (this.am_byok_keyid.length)
-            writer.writeString(5, this.am_byok_keyid);
-        if (this.am_byok_key.length)
-            writer.writeString(6, this.am_byok_key);
+        if (this.has_byok)
+            writer.writeMessage(2, this.byok, () => this.byok.serialize(writer));
         if (!w)
             return writer.getResultBuffer();
     }
@@ -163,19 +86,7 @@ export class SearchQuery extends pb_1.Message {
                     message.query = reader.readString();
                     break;
                 case 2:
-                    message.byok_session = reader.readString();
-                    break;
-                case 3:
-                    message.mxm_byok_key = reader.readString();
-                    break;
-                case 4:
-                    message.am_byok_teamid = reader.readString();
-                    break;
-                case 5:
-                    message.am_byok_keyid = reader.readString();
-                    break;
-                case 6:
-                    message.am_byok_key = reader.readString();
+                    reader.readMessage(message.byok, () => message.byok = ByokQuery.deserialize(reader));
                     break;
                 default: reader.skipField();
             }
@@ -353,10 +264,10 @@ export class ByokQuery extends pb_1.Message {
     #one_of_decls: number[][] = [];
     constructor(data?: any[] | {
         session_key?: string;
-        mxm_byok_key?: string;
-        am_byok_teamid?: string;
-        am_byok_keyid?: string;
-        am_byok_key?: string;
+        mxm_key?: string;
+        am_teamid?: string;
+        am_keyid?: string;
+        am_secret_key?: string;
     }) {
         super();
         pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -364,17 +275,17 @@ export class ByokQuery extends pb_1.Message {
             if ("session_key" in data && data.session_key != undefined) {
                 this.session_key = data.session_key;
             }
-            if ("mxm_byok_key" in data && data.mxm_byok_key != undefined) {
-                this.mxm_byok_key = data.mxm_byok_key;
+            if ("mxm_key" in data && data.mxm_key != undefined) {
+                this.mxm_key = data.mxm_key;
             }
-            if ("am_byok_teamid" in data && data.am_byok_teamid != undefined) {
-                this.am_byok_teamid = data.am_byok_teamid;
+            if ("am_teamid" in data && data.am_teamid != undefined) {
+                this.am_teamid = data.am_teamid;
             }
-            if ("am_byok_keyid" in data && data.am_byok_keyid != undefined) {
-                this.am_byok_keyid = data.am_byok_keyid;
+            if ("am_keyid" in data && data.am_keyid != undefined) {
+                this.am_keyid = data.am_keyid;
             }
-            if ("am_byok_key" in data && data.am_byok_key != undefined) {
-                this.am_byok_key = data.am_byok_key;
+            if ("am_secret_key" in data && data.am_secret_key != undefined) {
+                this.am_secret_key = data.am_secret_key;
             }
         }
     }
@@ -384,77 +295,77 @@ export class ByokQuery extends pb_1.Message {
     set session_key(value: string) {
         pb_1.Message.setField(this, 1, value);
     }
-    get mxm_byok_key() {
+    get mxm_key() {
         return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
     }
-    set mxm_byok_key(value: string) {
+    set mxm_key(value: string) {
         pb_1.Message.setField(this, 2, value);
     }
-    get am_byok_teamid() {
+    get am_teamid() {
         return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
     }
-    set am_byok_teamid(value: string) {
+    set am_teamid(value: string) {
         pb_1.Message.setField(this, 3, value);
     }
-    get am_byok_keyid() {
+    get am_keyid() {
         return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
     }
-    set am_byok_keyid(value: string) {
+    set am_keyid(value: string) {
         pb_1.Message.setField(this, 4, value);
     }
-    get am_byok_key() {
+    get am_secret_key() {
         return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
     }
-    set am_byok_key(value: string) {
+    set am_secret_key(value: string) {
         pb_1.Message.setField(this, 5, value);
     }
     static fromObject(data: {
         session_key?: string;
-        mxm_byok_key?: string;
-        am_byok_teamid?: string;
-        am_byok_keyid?: string;
-        am_byok_key?: string;
+        mxm_key?: string;
+        am_teamid?: string;
+        am_keyid?: string;
+        am_secret_key?: string;
     }): ByokQuery {
         const message = new ByokQuery({});
         if (data.session_key != null) {
             message.session_key = data.session_key;
         }
-        if (data.mxm_byok_key != null) {
-            message.mxm_byok_key = data.mxm_byok_key;
+        if (data.mxm_key != null) {
+            message.mxm_key = data.mxm_key;
         }
-        if (data.am_byok_teamid != null) {
-            message.am_byok_teamid = data.am_byok_teamid;
+        if (data.am_teamid != null) {
+            message.am_teamid = data.am_teamid;
         }
-        if (data.am_byok_keyid != null) {
-            message.am_byok_keyid = data.am_byok_keyid;
+        if (data.am_keyid != null) {
+            message.am_keyid = data.am_keyid;
         }
-        if (data.am_byok_key != null) {
-            message.am_byok_key = data.am_byok_key;
+        if (data.am_secret_key != null) {
+            message.am_secret_key = data.am_secret_key;
         }
         return message;
     }
     toObject() {
         const data: {
             session_key?: string;
-            mxm_byok_key?: string;
-            am_byok_teamid?: string;
-            am_byok_keyid?: string;
-            am_byok_key?: string;
+            mxm_key?: string;
+            am_teamid?: string;
+            am_keyid?: string;
+            am_secret_key?: string;
         } = {};
         if (this.session_key != null) {
             data.session_key = this.session_key;
         }
-        if (this.mxm_byok_key != null) {
-            data.mxm_byok_key = this.mxm_byok_key;
+        if (this.mxm_key != null) {
+            data.mxm_key = this.mxm_key;
         }
-        if (this.am_byok_teamid != null) {
-            data.am_byok_teamid = this.am_byok_teamid;
+        if (this.am_teamid != null) {
+            data.am_teamid = this.am_teamid;
         }
-        if (this.am_byok_keyid != null) {
-            data.am_byok_keyid = this.am_byok_keyid;
+        if (this.am_keyid != null) {
+            data.am_keyid = this.am_keyid;
         }
-        if (this.am_byok_key != null) {
-            data.am_byok_key = this.am_byok_key;
+        if (this.am_secret_key != null) {
+            data.am_secret_key = this.am_secret_key;
         }
         return data;
     }
@@ -464,14 +375,14 @@ export class ByokQuery extends pb_1.Message {
         const writer = w || new pb_1.BinaryWriter();
         if (this.session_key.length)
             writer.writeString(1, this.session_key);
-        if (this.mxm_byok_key.length)
-            writer.writeString(2, this.mxm_byok_key);
-        if (this.am_byok_teamid.length)
-            writer.writeString(3, this.am_byok_teamid);
-        if (this.am_byok_keyid.length)
-            writer.writeString(4, this.am_byok_keyid);
-        if (this.am_byok_key.length)
-            writer.writeString(5, this.am_byok_key);
+        if (this.mxm_key.length)
+            writer.writeString(2, this.mxm_key);
+        if (this.am_teamid.length)
+            writer.writeString(3, this.am_teamid);
+        if (this.am_keyid.length)
+            writer.writeString(4, this.am_keyid);
+        if (this.am_secret_key.length)
+            writer.writeString(5, this.am_secret_key);
         if (!w)
             return writer.getResultBuffer();
     }
@@ -485,16 +396,16 @@ export class ByokQuery extends pb_1.Message {
                     message.session_key = reader.readString();
                     break;
                 case 2:
-                    message.mxm_byok_key = reader.readString();
+                    message.mxm_key = reader.readString();
                     break;
                 case 3:
-                    message.am_byok_teamid = reader.readString();
+                    message.am_teamid = reader.readString();
                     break;
                 case 4:
-                    message.am_byok_keyid = reader.readString();
+                    message.am_keyid = reader.readString();
                     break;
                 case 5:
-                    message.am_byok_key = reader.readString();
+                    message.am_secret_key = reader.readString();
                     break;
                 default: reader.skipField();
             }

@@ -58,22 +58,40 @@ export class SearchService extends UnimplementedSearchService {
         throw new BadRequestError('Request missing required field: query');
       }
 
-      const appleByokKey =
-        !isNilOrBlank(call.request.byok_session) &&
-        !isNilOrBlank(call.request.am_byok_key)
-          ? await decryptByokKey(
-              call.request.byok_session,
-              call.request.am_byok_key,
-              knex,
-            )
-          : undefined;
+      const usesAppleByokKey =
+        !isNilOrBlank(call.request.byok.session_key) &&
+        !isNilOrBlank(call.request.byok.am_teamid) &&
+        !isNilOrBlank(call.request.byok.am_keyid) &&
+        !isNilOrBlank(call.request.byok.am_secret_key);
+
+      const appleByokTeamId = usesAppleByokKey
+        ? await decryptByokKey(
+            call.request.byok.session_key,
+            call.request.byok.am_teamid,
+            knex,
+          )
+        : undefined;
+      const appleByokKeyId = usesAppleByokKey
+        ? await decryptByokKey(
+            call.request.byok.session_key,
+            call.request.byok.am_keyid,
+            knex,
+          )
+        : undefined;
+      const appleByokKey = usesAppleByokKey
+        ? await decryptByokKey(
+            call.request.byok.session_key,
+            call.request.byok.am_secret_key,
+            knex,
+          )
+        : undefined;
 
       const mxmByokKey =
-        !isNilOrBlank(call.request.byok_session) &&
-        !isNilOrBlank(call.request.mxm_byok_key)
+        !isNilOrBlank(call.request.byok.session_key) &&
+        !isNilOrBlank(call.request.byok.mxm_key)
           ? await decryptByokKey(
-              call.request.byok_session,
-              call.request.mxm_byok_key,
+              call.request.byok.session_key,
+              call.request.byok.mxm_key,
               knex,
             )
           : undefined;
@@ -104,6 +122,8 @@ export class SearchService extends UnimplementedSearchService {
         const appleResponse = (await requestToApple(
           parsedAppleUrl,
           knex,
+          appleByokTeamId,
+          appleByokKeyId,
           appleByokKey,
         ).then((res) => res.json())) as
           | AppleMusicApi.AlbumResponse
@@ -159,7 +179,7 @@ export class SearchService extends UnimplementedSearchService {
             mxmByokKey,
           );
 
-          if (!r.ok) {
+          if (r.error || !r.data) {
             throw new Error(
               "The track hasn't been imported yet. Please try again after 1-5 minutes.\n" +
                 'If the problem persists after 15 minutes, please contact to the developer.',
@@ -167,9 +187,9 @@ export class SearchService extends UnimplementedSearchService {
           }
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const realResp = (await r.json()) as any;
+          const realResp = r.data;
           const parsedResp = parseTrackResponseFromMxm(
-            realResp.message.body,
+            realResp.message!.body!,
             item.isrc,
           );
 
@@ -238,11 +258,11 @@ export class SearchService extends UnimplementedSearchService {
       }
 
       const mxmByokKey =
-        !isNilOrBlank(call.request.byok_session) &&
-        !isNilOrBlank(call.request.mxm_byok_key)
+        !isNilOrBlank(call.request.byok.session_key) &&
+        !isNilOrBlank(call.request.byok.mxm_key)
           ? await decryptByokKey(
-              call.request.byok_session,
-              call.request.mxm_byok_key,
+              call.request.byok.session_key,
+              call.request.byok.mxm_key,
               knex,
             )
           : undefined;
@@ -274,7 +294,7 @@ export class SearchService extends UnimplementedSearchService {
 
         if (!result) {
           const r = await requestToMxm(parsedMxmUrl, mxmByokKey);
-          if (!r.ok) {
+          if (r.error || !r.data) {
             throw new Error(
               "The track hasn't been imported yet. Please request Mxm team to import this track.\n" +
                 'You can request them by sending the track URL in #catalogue-issues in Community Slack.',
@@ -282,8 +302,8 @@ export class SearchService extends UnimplementedSearchService {
           }
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const realResp = (await r.json()) as any;
-          result = parseTrackResponseFromMxm(realResp.message.body);
+          const realResp = r.data;
+          result = parseTrackResponseFromMxm(realResp.message!.body!);
 
           await knex<DatabaseResult<IMxmTrackOptimisedResponse>>(
             'mxm-cache',
@@ -318,7 +338,7 @@ export class SearchService extends UnimplementedSearchService {
 
       if (!resultAlbum) {
         const r = await requestToMxm(parsedMxmUrl, mxmByokKey);
-        if (!r.ok) {
+        if (r.error || !r.data) {
           throw new Error(
             "The album hasn't been imported yet. Please request Mxm team to import this album.\n" +
               'You can request them by sending the album URL in #catalogue-issues in Community Slack.',
@@ -326,8 +346,8 @@ export class SearchService extends UnimplementedSearchService {
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const albumResp = (await r.json()) as any;
-        resultAlbum = parseAlbumResponseFromMxm(albumResp.message.body);
+        const albumResp = r.data;
+        resultAlbum = parseAlbumResponseFromMxm(albumResp.message!.body!);
 
         const hasCacheWithOtherKey = await knex<
           DatabaseResult<IMxmAlbumOptimisedResponse>

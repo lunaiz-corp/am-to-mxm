@@ -17,12 +17,8 @@ service Byok {
 
 // Message types definition
 message SearchQuery {
-    string query             = 1; // Could be Apple Music Track ID, link, ISRC or Abstrack.
-    string byok_session      = 2; // Session key that 1:1 matches RSA Key pair.
-    string mxm_byok_key      = 3; // RSA Encrypted BYOK (Bring-Your-Own-Key) for MxM. Could be null.
-    string am_byok_teamid    = 4; // Apple API Team ID for Apple Music BYOK. Could be null.
-    string am_byok_keyid     = 5; // Apple API Key ID for Apple Music BYOK. Could be null.
-    string am_byok_key       = 6; // RSA Encrypted BYOK (Bring-Your-Own-Key) for Apple Music. Could be null.
+    string query   = 1; // Could be Apple Music Track ID, link, ISRC or Abstrack.
+    ByokQuery byok = 2; // encrypted BYOK (Bring-Your-Own-Key) key. Could be null.
 }
 
 message SearchResult {
@@ -30,16 +26,16 @@ message SearchResult {
 }
 
 message ByokEncResult {
-    string session_key = 1; // Session key that 1:1 matches RSA Key pair.
+    string session_key    = 1; // Session key that 1:1 matches RSA Key pair.
     ByokEncJwk public_key = 2; // JWK-typed Public key for BYOK (Bring-Your-Own-Key) encryption.
 }
 
 message ByokQuery {
-    string session_key       = 1; // Session key that 1:1 matches RSA Key pair.
-    string mxm_byok_key      = 2; // RSA Encrypted BYOK (Bring-Your-Own-Key) for MxM. Could be null.
-    string am_byok_teamid    = 3; // Apple API Team ID for Apple Music BYOK. Could be null.
-    string am_byok_keyid     = 4; // Apple API Key ID for Apple Music BYOK. Could be null.
-    string am_byok_key       = 5; // RSA Encrypted BYOK (Bring-Your-Own-Key) for Apple Music. Could be null.
+    string session_key   = 1; // Session key that 1:1 matches RSA Key pair.
+    string mxm_key       = 2; // RSA Encrypted BYOK (Bring-Your-Own-Key) for MxM. Could be null.
+    string am_teamid     = 3; // Apple API Team ID for Apple Music BYOK. Could be null.
+    string am_keyid      = 4; // Apple API Key ID for Apple Music BYOK. Could be null.
+    string am_secret_key = 5; // RSA Encrypted BYOK (Bring-Your-Own-Key) for Apple Music. Could be null.
 }
 
 message ByokResult {

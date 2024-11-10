@@ -1,16 +1,24 @@
-import { fromByteArray as base64FromByteArray } from 'base64-js';
+import { ByokEncResult } from '@packages/grpc/__generated__/am2mxm-api';
 
-import { ByokClient as ByokServiceClient } from '@packages/grpc/__generated__/am2mxm-api';
-import { Empty } from '@packages/grpc/__generated__/google/protobuf/empty';
-
-const client = new ByokServiceClient(import.meta.env.VITE_API_URL);
 const algorithm = {
   name: 'RSA-OAEP',
   hash: { name: 'SHA-256' },
 };
 
-export async function encodeRsa(data: string) {
-  const publicKey = await client.getEncPublicKey(new Empty({}), null);
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const b of bytes) {
+    binary += String.fromCharCode(b);
+  }
+
+  return window.btoa(binary);
+}
+
+// eslint-disable-next-line import/prefer-default-export
+export async function encodeRsa(publicKey: ByokEncResult, data: string) {
   const spkiPublicKey = await crypto.subtle.importKey(
     'jwk',
     publicKey.public_key,
@@ -27,7 +35,6 @@ export async function encodeRsa(data: string) {
 
   return {
     sessionKey: publicKey.session_key,
-    // TODO: Check why this is different that generated from server and fix it
-    encrypted: base64FromByteArray(new Uint8Array(encrypted)),
+    encrypted: arrayBufferToBase64(encrypted),
   };
 }

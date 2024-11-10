@@ -118,7 +118,15 @@ export default function Modal() {
                   className="break-words rounded-md p-3 text-neutral-900 dark:text-neutral-100"
                   defaultValue={value || ''}
                   onChange={(e) => {
-                    setValue(e.target.value);
+                    console.log(
+                      'onChange',
+                      (e.currentTarget || e.target).value,
+                    );
+                    setValue((e.currentTarget || e.target).value);
+                  }}
+                  onInput={(e) => {
+                    console.log('onInput', (e.currentTarget || e.target).value);
+                    setValue((e.currentTarget || e.target).value);
                   }}
                 />
               );
@@ -136,9 +144,13 @@ export default function Modal() {
           <button
             type="button"
             className="flex h-12 items-center rounded-lg bg-neutral-800 px-6 text-neutral-100 transition-colors hover:bg-neutral-700 active:bg-neutral-600 dark:bg-neutral-100 dark:text-neutral-800 dark:hover:bg-neutral-200 dark:active:bg-neutral-300"
-            onClick={() => {
+            onClick={async () => {
               if (data.onConfirm) {
-                data.onConfirm();
+                if (data.onConfirm instanceof Promise) {
+                  await data.onConfirm();
+                } else {
+                  data.onConfirm();
+                }
               }
 
               const currentModalRef = modalRef.current!;

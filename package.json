@@ -1,6 +1,6 @@
 {
   "name": "am-to-mxm",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "frontend": "pnpm --filter @apps/frontend",
     "backend": "pnpm --filter @apps/backend",

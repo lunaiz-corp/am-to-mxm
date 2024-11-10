@@ -14,6 +14,7 @@ import { Empty } from '@packages/grpc/__generated__/google/protobuf/empty';
 import DatabaseUtil from '../utils/db.util';
 import { requestToMxm } from '../utils/request.util';
 import { decryptByokKey, getNewKeyPair } from '../utils/byokKey.util';
+import { getAppleDeveloperToken } from '../utils/appleToken.util';
 
 import { isNilOrBlank } from '../utils/es-toolkit-inspired/isNilOrBlank';
 
@@ -81,19 +82,21 @@ export class ByokService extends UnimplementedByokService {
         );
       }
 
-      if (isNilOrBlank(call.request.byok_key)) {
-        throw new BadRequestError('Request missing required field: byok_key');
+      if (isNilOrBlank(call.request.mxm_key)) {
+        throw new BadRequestError('Request missing required field: mxm_key');
       }
 
       const byokKey = await decryptByokKey(
         call.request.session_key,
-        call.request.byok_key,
+        call.request.mxm_key,
         knex,
       );
 
       if (!byokKey) {
         return callback(null, new ByokResult({ valid: false }));
       }
+
+      logger.debug('Decrypted BYOK key:', byokKey);
 
       const r = await requestToMxm(
         {
@@ -103,7 +106,17 @@ export class ByokService extends UnimplementedByokService {
         byokKey,
       );
 
-      return callback(null, new ByokResult({ valid: r.ok }));
+      return callback(
+        null,
+        new ByokResult({
+          valid:
+            !r.error &&
+            r.data &&
+            String(r.data.message?.header?.status_code || '500').startsWith(
+              '2',
+            ),
+        }),
+      );
     } catch (error) {
       logger.error(error);
 
@@ -136,23 +149,51 @@ export class ByokService extends UnimplementedByokService {
         );
       }
 
-      if (isNilOrBlank(call.request.byok_key)) {
-        throw new BadRequestError('Request missing required field: byok_key');
+      if (isNilOrBlank(call.request.am_teamid)) {
+        throw new BadRequestError('Request missing required field: am_teamid');
       }
 
+      if (isNilOrBlank(call.request.am_keyid)) {
+        throw new BadRequestError('Request missing required field: am_keyid');
+      }
+
+      if (isNilOrBlank(call.request.am_secret_key)) {
+        throw new BadRequestError(
+          'Request missing required field: am_secret_key',
+        );
+      }
+
+      const teamId = await decryptByokKey(
+        call.request.session_key,
+        call.request.am_teamid,
+        knex,
+      );
+      const keyId = await decryptByokKey(
+        call.request.session_key,
+        call.request.am_keyid,
+        knex,
+      );
       const byokKey = await decryptByokKey(
         call.request.session_key,
-        call.request.byok_key,
+        call.request.am_secret_key,
         knex,
       );
 
-      if (!byokKey) {
+      if (!teamId || !keyId || !byokKey) {
         return callback(null, new ByokResult({ valid: false }));
       }
 
+      logger.debug('Decrypted BYOK teamId:', teamId);
+      logger.debug('Decrypted BYOK keyId:', keyId);
+      logger.debug('Decrypted BYOK key:', byokKey);
+
       const r = await fetch('https://api.music.apple.com/v1/test', {
         headers: {
-          Authorization: `Bearer ${byokKey}`,
+          Authorization: `Bearer ${await getAppleDeveloperToken(
+            teamId,
+            keyId,
+            byokKey,
+          )}`,
         },
       });
 

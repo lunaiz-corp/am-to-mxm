@@ -4,6 +4,8 @@ import {
   IMxmTrackOptimisedResponse,
 } from '../types/mxmOptimisedResponse.type';
 
+import { components } from '../__generated__/musixmatch';
+
 export function parseResponseFromApple(
   data: AppleMusicApi.Album[] | AppleMusicApi.Song[],
 ): IAppleOptimisedResponse[] {
@@ -64,30 +66,38 @@ function extractMxmVanityIdFromUrl(url: string): string | null {
 }
 
 export function parseTrackResponseFromMxm(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any,
+  data:
+    | {
+        track_list?: components['schemas']['Track'][];
+      }
+    | {
+        album?: components['schemas']['Album'];
+      }
+    | {
+        track?: components['schemas']['Track'];
+      },
   isrc?: string,
 ): IMxmTrackOptimisedResponse {
-  if (data.track) {
+  if ('track' in data && data.track) {
     const vanityIdInferenced = extractMxmVanityIdFromUrl(
-      data.track.track_share_url,
+      data.track.track_share_url!,
     );
 
     return {
-      abstrack: data.track.commontrack_id,
-      isrc: data.track.track_isrc || isrc,
-      name: data.track.track_name,
+      abstrack: data.track.commontrack_id!,
+      isrc: data.track.track_isrc! || isrc!,
+      name: data.track.track_name!,
 
-      url: data.track.track_share_url,
-      vanityId: data.track.commontrack_vanity_id || vanityIdInferenced,
+      url: data.track.track_share_url!,
+      vanityId: data.track.commontrack_vanity_id! || vanityIdInferenced!,
 
       album: {
-        id: data.track.album_id,
-        name: data.track.album_name,
+        id: data.track.album_id!,
+        name: data.track.album_name!,
       },
       artist: {
-        id: data.track.artist_id,
-        name: data.track.artist_name,
+        id: data.track.artist_id!,
+        name: data.track.artist_name!,
       },
     };
   }
@@ -96,22 +106,31 @@ export function parseTrackResponseFromMxm(
 }
 
 export function parseAlbumResponseFromMxm(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any,
+  data:
+    | {
+        track_list?: components['schemas']['Track'][];
+      }
+    | {
+        album?: components['schemas']['Album'];
+      }
+    | {
+        track?: components['schemas']['Track'];
+      },
 ): IMxmAlbumOptimisedResponse {
-  if (data.album) {
+  if ('album' in data && data.album) {
     return {
-      id: data.album.album_id,
-      name: data.album.album_name,
+      id: data.album.album_id!,
+      name: data.album.album_name!,
 
       url: `https://www.musixmatch.com/album/${data.album.artist_id}/${data.album.album_id}`,
 
       artist: {
-        id: data.album.artist_id.toString(),
-        name: data.album.artist_name,
+        id: data.album.artist_id!,
+        name: data.album.artist_name!,
       },
 
       externalIds: {
+        // @ts-expect-error - x
         itunes: data.album.external_ids.itunes[0],
       },
     };

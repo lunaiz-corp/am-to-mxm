@@ -9,7 +9,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index",
-    "lint": "eslint --ignore-path ../../.gitignore src/"
+    "lint": "eslint --ignore-path ../../.gitignore src/",
+    "mxm-compile": "openapi-typescript https://github.com/lunaiz-corp/musixmatch-oas/raw/refs/heads/main/openapi.yaml -o src/__generated__/musixmatch.d.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.11.3",
@@ -19,10 +20,12 @@
     "es-toolkit": "^1.23.0",
     "jose": "^5.9.4",
     "knex": "^3.1.0",
+    "openapi-fetch": "^0.13.0",
     "tslog": "^4.9.3"
   },
   "devDependencies": {
     "@types/node": "22.7.4",
+    "openapi-typescript": "^7.4.3",
     "tsx": "^4.19.1",
     "typescript": "^5.4.3"
   }
